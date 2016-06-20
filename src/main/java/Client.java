@@ -26,13 +26,14 @@ public class Client {
         System.out.println("Request time outed " + requestsTimeout);
     }
 
-    private static final long REQUESTS_SECOND = 3000;
-    private static long time = -1;
+    private static final long REQUESTS_SECOND = 3000 / 10;
+    private static final double TIME_INTERVAL = 0.1;
+    private static double time = -1;
     private static long requestCounter = REQUESTS_SECOND;
     private static long requestsTimeout = 0;
-    
+
     public static void count(double requestTime) {
-        if (time == -1) {
+        if (time < 0) {
             time = (long)requestTime;
         }
 
@@ -44,8 +45,8 @@ public class Client {
         }
 
 
-        if (requestCounter == 0 || requestTime >= time + 1) {
-            time++;
+        if (requestCounter == 0 || requestTime >= time + TIME_INTERVAL) {
+            time += TIME_INTERVAL;
             requestCounter = REQUESTS_SECOND;
         }
     }
