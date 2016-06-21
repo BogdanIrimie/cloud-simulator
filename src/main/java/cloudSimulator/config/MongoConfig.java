@@ -1,4 +1,4 @@
-package cloudSimulator;
+package cloudSimulator.config;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
