@@ -46,7 +46,7 @@ public class Client implements CommandLineRunner {
         });
 
         System.out.println("cloudSimulator.dao.HttpRequestOpperations time outed " + requestsTimeout);
-        System.out.println("Average response time is: " + delay / counter);
+        System.out.println("Average response time is: " + totalDelay / counter);
     }
 
     private int FACTOR = 10; // 1 = 1 sec; 10 = 1/10 sec
@@ -56,26 +56,28 @@ public class Client implements CommandLineRunner {
     private long requestCounter = REQUESTS_SECOND;
     private long requestsTimeout = 0;
     private long counter;
+    private double totalDelay = 0;
     private double delay = 0;
 
     public void count(double requestTime) {
         if (time < 0) {
-            time = Math.floor(requestTime * FACTOR ) / FACTOR;
+            time = Math.ceil(requestTime * FACTOR ) / FACTOR;
             //time = (long)requestTime;
         }
 
         if (requestTime + 5 >= time) {
             requestCounter--;
             counter++;
-            delay += time + TIME_INTERVAL - requestTime;
-            //httpRequestOpperations.save(new RequestDetails(0,delay));
+            delay = time - requestTime;
+            totalDelay += delay;
+            httpRequestOpperations.save(new RequestDetails(0, delay));
         }
         else {
             requestsTimeout++;
         }
 
 
-        if (requestCounter == 0 || requestTime >= time + TIME_INTERVAL) {
+        if (requestCounter == 0 || requestTime >= time) {
             time += TIME_INTERVAL;
             requestCounter = REQUESTS_SECOND;
         }
