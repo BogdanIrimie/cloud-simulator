@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 @SpringBootApplication
 public class Client implements CommandLineRunner {
@@ -47,6 +49,7 @@ public class Client implements CommandLineRunner {
 
         System.out.println("Operations time outed " + requestsTimeout);
         System.out.println("Average response time is: " + totalDelay / requestCounter);
+        httpRequestOpperations.insert(requestList);
     }
 
     private  double time = -1;
@@ -56,6 +59,8 @@ public class Client implements CommandLineRunner {
     private double delay = 0;
 
     private double timePerRequest = 1.0 / 1000;
+    private List<RequestDetails> requestList = new ArrayList<>();
+
 
     public void count(double requestTime) {
         if (time < 0) {
@@ -72,11 +77,15 @@ public class Client implements CommandLineRunner {
             requestCounter++;
             delay = time - requestTime;
             totalDelay += delay;
-            httpRequestOpperations.save(new RequestDetails(0, delay));
-
+            requestList.add(new RequestDetails(0, delay));
         }
         else {
             requestsTimeout++;
+        }
+
+        if (requestCounter % 500000 == 1) {
+            httpRequestOpperations.insert(requestList);
+            requestList = new ArrayList<>();
         }
 
     }
