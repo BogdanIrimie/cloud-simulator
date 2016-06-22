@@ -8,13 +8,20 @@ public class RequestDetails {
     private String id;
 
     private long requestId;
+    private double requestArrivalTime;
     private double responseTime;
 
     public RequestDetails() {
     }
 
-    public RequestDetails(long requestId, double responseTime) {
+    public RequestDetails(long requestId, double requestArrivalTime) {
         this.requestId = requestId;
+        this.requestArrivalTime = requestArrivalTime;
+    }
+
+    public RequestDetails(long requestId, double requestArrivalTime, double responseTime) {
+        this.requestId = requestId;
+        this.requestArrivalTime = requestArrivalTime;
         this.responseTime = responseTime;
     }
 
@@ -32,6 +39,14 @@ public class RequestDetails {
 
     public void setRequestId(long requestId) {
         this.requestId = requestId;
+    }
+
+    public double getRequestArrivalTime() {
+        return requestArrivalTime;
+    }
+
+    public void setRequestArrivalTime(double requestArrivalTime) {
+        this.requestArrivalTime = requestArrivalTime;
     }
 
     public double getResponseTime() {
