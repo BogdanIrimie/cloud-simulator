@@ -32,28 +32,34 @@ public class Client implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         httpRequestOpperations.deleteAll();
         Files.walk(Paths.get("traces"))
-                .filter(Files::isRegularFile)           // only consider files
-                .filter(filePath -> filePath.toString().contains("traces_"))    // only files that contain traces in name
-                .sorted(Comparator.naturalOrder())      // sort file name
-                .forEach(filePath -> {                  // for each file
+                .filter(Files::isRegularFile)                                                                           // only consider files
+                .filter(filePath -> filePath.toString().contains("traces_"))                                            // only files that contain traces in name
+                .sorted(Comparator.naturalOrder())                                                                      // sort file by name
+                .forEach(filePath -> {
                     System.out.println(filePath);
                     try {
                         Files.lines(Paths.get(filePath.toString()), Charset.forName("Cp1252"))  // Open file and read lines
-                                .map(line -> line.split("\\s+")[1])     // extract the second record from the file
-                                .map(line -> Double.parseDouble(line))
-                                .forEach(line -> count(line));
+                                .map(line -> line.split("\\s+"))
+                                .forEach(splittedLine -> parseLog(splittedLine));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
         });
 
-        System.out.println("Operations time outed " + requestsTimeout);
+        System.out.println("Operations time outed " + countNumberOfRequestsTimeOuted);
         System.out.println("Average response time is: " + totalDelay / requestCounter);
         httpRequestOpperations.insert(requestList);
     }
 
+    public void parseLog(String[] splittedTraceLine) {
+        long requestId = Long.parseLong(splittedTraceLine[0]);
+        double requestTime = Double.parseDouble(splittedTraceLine[1]);
+        RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
+        simulateTimePassing(requestDetails);
+    }
+
     private  double time = -1;
-    private long requestsTimeout = 0;
+    private long countNumberOfRequestsTimeOuted = 0;
     private long requestCounter;
     private double totalDelay = 0;
     private double delay = 0;
@@ -62,7 +68,8 @@ public class Client implements CommandLineRunner {
     private List<RequestDetails> requestList = new ArrayList<>();
 
 
-    public void count(double requestTime) {
+    public void simulateTimePassing(RequestDetails requestDetails) {
+        double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
         }
@@ -77,10 +84,11 @@ public class Client implements CommandLineRunner {
             requestCounter++;
             delay = time - requestTime;
             totalDelay += delay;
-            requestList.add(new RequestDetails(0, delay));
+            requestDetails.setResponseTime(delay);
+            requestList.add(requestDetails);
         }
         else {
-            requestsTimeout++;
+            countNumberOfRequestsTimeOuted++;
         }
 
         if (requestCounter % 500000 == 1) {
