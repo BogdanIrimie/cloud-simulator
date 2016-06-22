@@ -38,7 +38,7 @@ public class Client implements CommandLineRunner {
                 .forEach(filePath -> {
                     System.out.println(filePath);
                     try {
-                        Files.lines(Paths.get(filePath.toString()), Charset.forName("Cp1252"))  // Open file and read lines
+                        Files.lines(Paths.get(filePath.toString()), Charset.forName("Cp1252"))                          // Open file and read lines
                                 .map(line -> line.split("\\s+"))
                                 .forEach(splittedLine -> parseLog(splittedLine));
                     } catch (IOException e) {
@@ -47,7 +47,7 @@ public class Client implements CommandLineRunner {
         });
 
         System.out.println("Operations time outed " + countNumberOfRequestsTimeOuted);
-        System.out.println("Average response time is: " + totalDelay / requestCounter);
+        System.out.printf("Average response time is: %f\n", (totalDelay / fulfilledRequestCounter));
         httpRequestOpperations.insert(requestList);
     }
 
@@ -60,12 +60,12 @@ public class Client implements CommandLineRunner {
 
     private  double time = -1;
     private long countNumberOfRequestsTimeOuted = 0;
-    private long requestCounter;
+    private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
     private double totalDelay = 0;
-    private double delay = 0;
+    private double responseTime = 0;
 
-    private double timePerRequest = 1.0 / 1000;
-    private List<RequestDetails> requestList = new ArrayList<>();
+    private double timePerRequest = 1.0 / 9000;
+    private List<RequestDetails> requestList = new ArrayList<RequestDetails>();
 
 
     public void simulateTimePassing(RequestDetails requestDetails) {
@@ -80,21 +80,26 @@ public class Client implements CommandLineRunner {
 
         if (requestTime + 5 >= time) {
             time += timePerRequest;
+            fulfilledRequestCounter++;
 
-            requestCounter++;
-            delay = time - requestTime;
-            totalDelay += delay;
-            requestDetails.setResponseTime(delay);
-            requestList.add(requestDetails);
+            responseTime = time - requestTime;
+            totalDelay += responseTime;
         }
         else {
             countNumberOfRequestsTimeOuted++;
+            timeOutedRequestCounter++;
+            responseTime = -1;
         }
 
-        if (requestCounter % 500000 == 1) {
+        requestDetails.setResponseTime(responseTime);
+        requestList.add(requestDetails);
+
+        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
+        if (totalRequestCounter % 500000 == 1) {
             httpRequestOpperations.insert(requestList);
-            requestList = new ArrayList<>();
+            requestList = new ArrayList<RequestDetails>();
         }
 
     }
+
 }
