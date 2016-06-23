@@ -1,0 +1,19 @@
+{
+  "cluster": [
+    {
+      "name": "TC1",
+      "sla": 99.99,
+      "vmNumber": 1
+    },
+    {
+      "name": "TC2",
+      "sla": 70.00,
+      "vmNumber": 1
+    },
+    {
+      "name": "TC1",
+      "sla": 50.00,
+      "vmNumber": 1
+    }
+  ]
+}
