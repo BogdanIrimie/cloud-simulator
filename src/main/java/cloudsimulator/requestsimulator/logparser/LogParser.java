@@ -22,7 +22,7 @@ public class LogParser {
     @Autowired
     private HttpRequestOperations httpRequestOperations;
 
-    private double time = -1, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 9000;;
+    private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 9000;
     private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
     private List<RequestDetails> requestList = new ArrayList<>();
 
@@ -76,6 +76,7 @@ public class LogParser {
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
+            notificationTime = time;
         }
 
         if (requestTime >= time) {
@@ -101,6 +102,11 @@ public class LogParser {
         if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
             httpRequestOperations.insert(requestList);
             requestList = new ArrayList<>();
+        }
+
+        // Notify other components of time passing, in 1 second increments.
+        if (time >= notificationTime + 1) {
+            // TODO notify other components that 1 second has passed.
         }
 
     }
