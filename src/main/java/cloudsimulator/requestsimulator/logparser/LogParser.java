@@ -26,6 +26,12 @@ public class LogParser {
     private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
     private List<RequestDetails> requestList = new ArrayList<>();
 
+    /**
+     * Parse traces from log files and feeds them to the simulation.
+     *
+     * @return simulation results.
+     * @throws IOException
+     */
     public SimulationStatistics parseLogs() throws IOException {
         httpRequestOperations.deleteAll();
 
@@ -49,13 +55,23 @@ public class LogParser {
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }
 
-    private void parseLog(String[] splittedTraceLine) {
-        long requestId = Long.parseLong(splittedTraceLine[0]);
-        double requestTime = Double.parseDouble(splittedTraceLine[1]);
+    /**
+     * Create RequestDetails object from trace.
+     *
+     * @param splitTraceLine Array of Strings from one trace.
+     */
+    private void parseLog(String[] splitTraceLine) {
+        long requestId = Long.parseLong(splitTraceLine[0]);
+        double requestTime = Double.parseDouble(splitTraceLine[1]);
         RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
         simulateTimePassing(requestDetails);
     }
 
+    /**
+     * Simulate time passing in order to compute response time for requests in trace.
+     *
+     * @param requestDetails contains all the details necessary to compute response time for a trace.
+     */
     private void simulateTimePassing(RequestDetails requestDetails) {
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {

@@ -1,5 +1,8 @@
 package cloudsimulator.requestsimulator.dto;
 
+/**
+ * Output of a simulation.
+ */
 public class SimulationStatistics {
 
     private double totalDelay = 0;

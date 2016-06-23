@@ -2,6 +2,9 @@ package cloudsimulator.requestsimulator.dto;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * Characteristics for request, some obtaines from trace and others computed by the simulation.
+ */
 public class RequestDetails {
 
     @Id
