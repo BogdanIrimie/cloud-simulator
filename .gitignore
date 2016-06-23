@@ -14,6 +14,7 @@ hs_err_pid*
 #Intellij files
 .idea
 *.iml
+target/
 
 
 # input files
