@@ -6,7 +6,8 @@ import java.util.Random;
 
 public class SimulateFailures {
 
-    private static final int numberOfDaysForSla = 30;
+    private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
+    private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
 
     public SimulatedCluster simulateFailures(SimulatedCluster simulatedCluster) {
 
@@ -26,10 +27,10 @@ public class SimulateFailures {
     }
 
     private boolean testVmFarFailure(double sla) {
-        int seconds;                                                                      // 24 hours * 60 minutes * 60 seconds;
+        int seconds;
         long secondsOffline;
 
-        seconds = numberOfDaysForSla * 86400;
+        seconds = NUMBER_OF_DAYS_FOR_SLA * NUMBER_OF_SECONDS_IN_DAY;
         secondsOffline = (long) (seconds *  (100 - sla)) / 100;
 
         Random random = new Random();
@@ -42,18 +43,4 @@ public class SimulateFailures {
         return false;
     }
 
-
-    public static void main(String[] args) {
-        SimulateFailures simulateFailures = new SimulateFailures();
-        int failedVmCount = 0;
-
-        for (int i = 0; i < 86400 * numberOfDaysForSla; i++) {
-            boolean isVmFailed = simulateFailures.testVmFarFailure(80.00);
-            //System.out.println("Is vm available: " + isVmFailed);
-            if (isVmFailed) {
-                failedVmCount++;
-            }
-        }
-        System.out.println("Failed VMs: " + failedVmCount);
-    }
 }
