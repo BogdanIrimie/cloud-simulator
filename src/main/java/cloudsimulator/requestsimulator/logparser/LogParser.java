@@ -4,6 +4,7 @@ import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -17,6 +18,7 @@ import java.util.List;
  * Read all traces from multiple files. Simulate passing of time and compute response time for request.
  * All the results are saved in database.
  */
+@Component
 public class LogParser {
 
     @Autowired
