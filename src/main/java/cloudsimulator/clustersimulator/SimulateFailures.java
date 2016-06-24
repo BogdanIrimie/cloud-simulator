@@ -6,31 +6,26 @@ import java.util.Random;
 
 public class SimulateFailures {
 
+    private static final int numberOfDaysForSla = 30;
+
     public SimulatedCluster simulateFailures(SimulatedCluster simulatedCluster) {
 
         simulatedCluster.getCluster().forEach(tcg -> {
-            tcg.getSla();
+            // Test each machine in the treatment category.
+            for (int i = 0; i < tcg.getVmNumber(); i++) {
+                if (testVmFarFailure(tcg.getSla())) {
+                    tcg.setVmNumber(tcg.getVmNumber() - 1);
+                }
+            }
         });
+
+        // Remove a treatment category if there are no VMs in it.
+        simulatedCluster.getCluster().removeIf(tcg -> tcg.getVmNumber() == 0);
 
         return simulatedCluster;
     }
 
-    public static void main(String[] args) {
-        SimulateFailures simulateFailures = new SimulateFailures();
-        int failedVmCount = 0;
-
-        for (int i = 0; i < 86400 * 30; i++) {
-            boolean isVmFailed = simulateFailures.testVmFarFailure(99.99);
-            //System.out.println("Is vm available: " + isVmFailed);
-            if (isVmFailed) {
-                failedVmCount++;
-            }
-        }
-        System.out.println("Failed VMs: " + failedVmCount);
-    }
-
     private boolean testVmFarFailure(double sla) {
-        int numberOfDaysForSla = 30;
         int seconds;                                                                      // 24 hours * 60 minutes * 60 seconds;
         long secondsOffline;
 
@@ -39,10 +34,26 @@ public class SimulateFailures {
 
         Random random = new Random();
         int randomInt = random.nextInt(seconds);
-        //System.out.print(randomInt + " ");
+        long numberOfRestart = secondsOffline / 60;
+
         if (randomInt <= (secondsOffline / 60)) {
             return true;
         }
         return false;
+    }
+
+
+    public static void main(String[] args) {
+        SimulateFailures simulateFailures = new SimulateFailures();
+        int failedVmCount = 0;
+
+        for (int i = 0; i < 86400 * numberOfDaysForSla; i++) {
+            boolean isVmFailed = simulateFailures.testVmFarFailure(80.00);
+            //System.out.println("Is vm available: " + isVmFailed);
+            if (isVmFailed) {
+                failedVmCount++;
+            }
+        }
+        System.out.println("Failed VMs: " + failedVmCount);
     }
 }
