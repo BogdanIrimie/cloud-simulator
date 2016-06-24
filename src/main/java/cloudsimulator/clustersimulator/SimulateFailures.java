@@ -4,11 +4,20 @@ import cloudsimulator.clustersimulator.dto.SimulatedCluster;
 
 import java.util.Random;
 
+/**
+ * Simulate failures for VMs. The lower is up time in SLA the higher the chance for a Vm to fail.
+ */
 public class SimulateFailures {
 
     private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
     private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
 
+    /**
+     * Simulate failures for all the machines in the cluster.
+     *
+     * @param simulatedCluster Cluster for which failures will be simulated.
+     * @return Cluster after failure simulation.
+     */
     public SimulatedCluster simulateFailures(SimulatedCluster simulatedCluster) {
 
         simulatedCluster.getCluster().forEach(tcg -> {
@@ -26,6 +35,12 @@ public class SimulateFailures {
         return simulatedCluster;
     }
 
+    /**
+     * Test a particular VM in the cluster for failure.
+     *
+     * @param sla specifying the uptime for a VM.
+     * @return boolean value indicating the the machine has failed or not.
+     */
     private boolean testVmFarFailure(double sla) {
         int seconds;
         long secondsOffline;
