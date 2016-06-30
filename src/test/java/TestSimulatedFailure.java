@@ -1,8 +1,7 @@
 import cloudsimulator.clustersimulator.SimulateFailures;
-import cloudsimulator.clustersimulator.dto.SimulatedCluster;
+import cloudsimulator.clustersimulator.dto.Cluster;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -14,8 +13,8 @@ public class TestSimulatedFailure {
         SimulateFailures simulateFailures = new SimulateFailures();
         double sla = 80.00;
         long vmCount = 1;
-        SimulatedCluster simulatedCluster =
-                new SimulatedCluster(
+        Cluster cluster =
+                new Cluster(
                         new LinkedList<TCGroup>(Arrays.asList(
                                 new TCGroup("TC3", sla, vmCount))
                         )
@@ -23,8 +22,8 @@ public class TestSimulatedFailure {
 
 
         long secondsToFailure = 0;
-        while (simulatedCluster.getCluster().size() > 0) {
-            simulateFailures.simulateFailures(simulatedCluster);
+        while (cluster.getCluster().size() > 0) {
+            simulateFailures.simulateFailures(cluster);
             secondsToFailure++;
         }
 

@@ -3,15 +3,15 @@ package cloudsimulator.clustersimulator.dto;
 import java.util.List;
 
 /**
- * Cluster contains a list a treatment category groups.
+ * ClusterManager contains a list a treatment category groups.
  */
-public class SimulatedCluster {
+public class Cluster {
     private List<TCGroup> cluster;
 
-    public SimulatedCluster() {
+    public Cluster() {
     }
 
-    public SimulatedCluster(List<TCGroup> cluster) {
+    public Cluster(List<TCGroup> cluster) {
         this.cluster = cluster;
     }
 

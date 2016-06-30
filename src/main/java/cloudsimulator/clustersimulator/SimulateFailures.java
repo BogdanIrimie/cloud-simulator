@@ -1,6 +1,6 @@
 package cloudsimulator.clustersimulator;
 
-import cloudsimulator.clustersimulator.dto.SimulatedCluster;
+import cloudsimulator.clustersimulator.dto.Cluster;
 
 import java.util.Random;
 
@@ -15,12 +15,12 @@ public class SimulateFailures {
     /**
      * Simulate failures for all the machines in the cluster.
      *
-     * @param simulatedCluster Cluster for which failures will be simulated.
-     * @return Cluster after failure simulation.
+     * @param cluster ClusterManager for which failures will be simulated.
+     * @return ClusterManager after failure simulation.
      */
-    public SimulatedCluster simulateFailures(SimulatedCluster simulatedCluster) {
+    public Cluster simulateFailures(Cluster cluster) {
 
-        simulatedCluster.getCluster().forEach(tcg -> {
+        cluster.getCluster().forEach(tcg -> {
             // Test each machine in the treatment category.
             for (int i = 0; i < tcg.getVmNumber(); i++) {
                 if (testVmFarFailure(tcg.getSla())) {
@@ -30,9 +30,9 @@ public class SimulateFailures {
         });
 
         // Remove a treatment category if there are no VMs in it.
-        simulatedCluster.getCluster().removeIf(tcg -> tcg.getVmNumber() == 0);
+        cluster.getCluster().removeIf(tcg -> tcg.getVmNumber() == 0);
 
-        return simulatedCluster;
+        return cluster;
     }
 
     /**
