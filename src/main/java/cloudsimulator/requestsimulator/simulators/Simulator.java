@@ -1,5 +1,6 @@
 package cloudsimulator.requestsimulator.simulators;
 
+import cloudsimulator.requestsimulator.dto.SimulationStatistics;
 import cloudsimulator.requestsimulator.logparser.LogParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,11 @@ public class Simulator {
     LogParser logParser;
 
     public void startSimulation() throws IOException {
-        logParser.parseLogs();
+        SimulationStatistics simulationStatistics = logParser.parseLogs();
+        double avgResponseTime = simulationStatistics.getTotalDelay()
+                / simulationStatistics.getFulfilledRequestCounter();
+        System.out.printf("Average response time is: %f\n", avgResponseTime);
+        System.out.println("Number of requests dropped: " + simulationStatistics.getTimeOutedRequestCounter());
     }
 
 }
