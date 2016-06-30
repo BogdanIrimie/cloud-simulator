@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Timer;
 
 /**
  * Read all traces from multiple files. Simulate passing of time and compute response time for request.
@@ -24,7 +25,7 @@ public class LogParser {
     @Autowired
     private HttpRequestOperations httpRequestOperations;
 
-    private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 9000;
+    private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
     private List<RequestDetails> requestList = new ArrayList<>();
 
@@ -37,9 +38,12 @@ public class LogParser {
     public SimulationStatistics parseLogs() throws IOException {
         httpRequestOperations.deleteAll();
 
+        long startTime = System.nanoTime();
+
+
         Files.walk(Paths.get("traces"))
                 .filter(Files::isRegularFile)                                                                           // only consider files
-                .filter(filePath -> filePath.toString().contains("traces_"))                                            // only files that contain traces in name
+                .filter(filePath -> filePath.toString().contains("trimed"))                                            // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
                     System.out.println(filePath);
@@ -52,7 +56,9 @@ public class LogParser {
                     }
                 });
 
-        httpRequestOperations.insert(requestList);                                                                      // insert last records in database
+        long endTime = System.nanoTime();
+        System.out.println("Time spend executing " + (endTime - startTime));
+        //httpRequestOperations.insert(requestList);                                                                      // insert last records in database
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }
@@ -102,7 +108,7 @@ public class LogParser {
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
         if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
-            httpRequestOperations.insert(requestList);
+            //httpRequestOperations.insert(requestList);
             requestList = new ArrayList<>();
         }
 
