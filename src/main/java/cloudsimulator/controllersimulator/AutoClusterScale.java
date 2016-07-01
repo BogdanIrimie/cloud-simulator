@@ -45,7 +45,7 @@ public class AutoClusterScale {
             requestInLastSeconds = 0;
         }
 
-        // if the lower threshold is exceeded multiple times, increse the lowerThresholdExceedSuccession.
+        // if the lower threshold is exceeded multiple times, increase the lowerThresholdExceedSuccession.
         if (requestInLastSecond < lowerThreshold) {
             lowerThresholdExceedSuccession++;
             lowerThresholdRequestsInLastSecconds += requestInLastSecond;
@@ -55,12 +55,11 @@ public class AutoClusterScale {
             lowerThresholdRequestsInLastSecconds = 0;
         }
 
-        // Decrease timeout if it is set.
         if (timeout > 0) {
             timeout--;
         }
 
-        // Decide how many VMs should be allocated.
+        // Allocate VMs if the upper threshold was reached several consecutive times.
         if (upperThresholdExceedSuccession >= 3 && timeout == 0) {
             long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / upperThresholdExceedSuccession, upperThreshold, rpsForOneVm);
             clusterFormationController.allocateVMs(numberOfVmToAllocate, clusterManager);
@@ -70,7 +69,7 @@ public class AutoClusterScale {
             requestInLastSeconds = 0;
         }
 
-        // Decide how many VMs to remove
+        // Remove VMs if the lower threshold was reached several times.
         if (lowerThresholdExceedSuccession >= 3 && timeout == 0) {
             long numberOfVmToRemove = computeNumberOfVmToRemove(requestInLastSeconds / lowerThresholdRequestsInLastSecconds, lowerThreshold, rpsForOneVm);
             clusterFormationController.removeVMs(numberOfVmToRemove, clusterManager);
@@ -82,7 +81,14 @@ public class AutoClusterScale {
 
     }
 
-    // return the number of VMs that should be allocated to keep the resources utilisation < 70%.
+    /**
+     * Compute number of VMs that should be allocated to keep resources utilisation bellow the upper threshold.
+     *
+     * @param averageRequestRateInLastSeconds the average request rate in the last seconds.
+     * @param upperThreshold is used to trigger VM allocation.
+     * @param rpsForOneVm the maximum number of requests per second that a VM can handle.
+     * @return the number of VMs that should be allocated.
+     */
     private long computeNumberOfVmToAllocate(long averageRequestRateInLastSeconds, long upperThreshold, long rpsForOneVm) {
         long utilisationForFutureAllocationOfVms = rpsForOneVm * upperUtilisationFactor / 100;
         long requestsOverTheThreshold = averageRequestRateInLastSeconds - upperThreshold;
@@ -90,6 +96,14 @@ public class AutoClusterScale {
     }
 
 
+    /**
+     * Compute number of VM that should be stopped because the lower threshold was reached.
+     *
+     * @param averageRequestRateInLastSeconds the average request rate in the last seconds.
+     * @param lowerThreshold is used to trigger removal of VMs.
+     * @param rpsForOneVm the maximum number of requests per second that a VM can handle.
+     * @return number of VMs that should be removed from the cluster.
+     */
     private long computeNumberOfVmToRemove(long averageRequestRateInLastSeconds, long lowerThreshold, long rpsForOneVm) {
         long utilisationForFutureVmDeallocation = rpsForOneVm * lowerUtilisationFactor / 100;
         long requestsUnderTheThreshold = lowerThreshold - averageRequestRateInLastSeconds;
