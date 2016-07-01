@@ -1,6 +1,7 @@
 package cloudsimulator.requestsimulator.logparser;
 
 import cloudsimulator.clustersimulator.ClusterManager;
+import cloudsimulator.clustersimulator.dto.TCGroup;
 import cloudsimulator.controllersimulator.AutoClusterScale;
 import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
@@ -69,6 +70,9 @@ public class LogParser {
         long endTime = System.nanoTime();
         System.out.println("Time spend executing " + (endTime - startTime));
         //httpRequestOperations.insert(requestList);                                                                      // insert last records in database
+
+        long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
+        System.out.println("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }
@@ -129,8 +133,8 @@ public class LogParser {
             // Recompute time per request because the cluster configuration might have changed.
             timePerRequest = 1.0 / clusterManager.computeMaxRps();
 
-            // each second notify the auto scaler
-            scale.scalePolicy(clusterManager, requestInTheLastSecond);
+            // each second notify the auto scaling
+            //scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
             // Set next notification time with 1 second increment.
             notificationTime = time + 1;
