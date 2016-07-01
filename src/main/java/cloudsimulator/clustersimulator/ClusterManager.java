@@ -3,6 +3,8 @@ package cloudsimulator.clustersimulator;
 import cloudsimulator.clustersimulator.dto.Cluster;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +12,10 @@ import java.io.IOException;
 /**
  * Implements operations on the Cluster.
  */
+@Component
 public class ClusterManager {
 
-    private static final long RPS_FOR_VM = 100;
+    private static final long RPS_FOR_VM = 1000;
     private Cluster cluster;
 
     /**
