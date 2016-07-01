@@ -1,5 +1,5 @@
 {
-  "cluster": [
+  "tgGroup": [
     {
       "name": "TC1",
       "sla": 99.99,

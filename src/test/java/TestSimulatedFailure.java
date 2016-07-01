@@ -22,7 +22,7 @@ public class TestSimulatedFailure {
 
 
         long secondsToFailure = 0;
-        while (cluster.getCluster().size() > 0) {
+        while (cluster.getTgGroup().size() > 0) {
             simulateFailures.simulateFailures(cluster);
             secondsToFailure++;
         }

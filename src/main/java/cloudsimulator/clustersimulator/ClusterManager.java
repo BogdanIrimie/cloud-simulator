@@ -52,7 +52,7 @@ public class ClusterManager {
      * @return maximum number of request that can be fulfilled by the Cluster in one second.
      */
     public long computeMaxRps() {
-        return cluster.getCluster()
+        return cluster.getTgGroup()
                 .stream()
                 .mapToLong(TCGroup::getVmNumber)
                 .sum() * RPS_FOR_ONE_VM;
