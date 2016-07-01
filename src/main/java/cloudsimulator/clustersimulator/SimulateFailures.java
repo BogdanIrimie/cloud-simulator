@@ -1,12 +1,14 @@
 package cloudsimulator.clustersimulator;
 
 import cloudsimulator.clustersimulator.dto.Cluster;
+import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
 /**
  * Simulate failures for VMs. The lower is up time in SLA the higher the chance for a Vm to fail.
  */
+@Component
 public class SimulateFailures {
 
     private static final int NUMBER_OF_DAYS_FOR_SLA = 30;

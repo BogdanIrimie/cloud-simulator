@@ -13,10 +13,13 @@ public class AutoClusterScale {
     @Autowired
     ClusterFormationController clusterFormationController;
 
-    private int utilisationFactor = 70;
+    private int upperUtilisationFactor = 70;
+    private int lowerUtilisationFactor = 60;
     private int timeout = 0;
-    private int succession = 0;
+    private int upperThresholdExceedSuccession = 0;
+    private int lowerThresholdExceedSuccession = 0;
     private long requestInLastSeconds;
+    private long lowerThresholdRequestsInLastSecconds;
 
     /**
      * Decide to scale when the threshold is exceeded for multiple times in a row
@@ -29,16 +32,27 @@ public class AutoClusterScale {
         long rpsForOneVm  = clusterManager.getRpsForOneVm();
         long maxRps =  clusterManager.computeMaxRps();
 
-        long upperThreshold = utilisationFactor * maxRps / 100;
+        long upperThreshold = upperUtilisationFactor * maxRps / 100;
+        long lowerThreshold = lowerUtilisationFactor * maxRps / 100;
 
-        // If the upperThreshold is exceeded multiple times in a row, the succession will increment.
+        // If the upperThreshold is exceeded multiple times in a row, the upperThresholdExceedSuccession will increment.
         if (requestInLastSecond > upperThreshold) {
-            succession++;
+            upperThresholdExceedSuccession++;
             requestInLastSeconds += requestInLastSecond;
         }
         else {
-            succession = 0;
+            upperThresholdExceedSuccession = 0;
             requestInLastSeconds = 0;
+        }
+
+        // if the lower threshold is exceeded multiple times, increse the lowerThresholdExceedSuccession.
+        if (requestInLastSecond < lowerThreshold) {
+            lowerThresholdExceedSuccession++;
+            lowerThresholdRequestsInLastSecconds += requestInLastSecond;
+        }
+        else {
+            lowerThresholdExceedSuccession = 0;
+            lowerThresholdRequestsInLastSecconds = 0;
         }
 
         // Decrease timeout if it is set.
@@ -47,21 +61,39 @@ public class AutoClusterScale {
         }
 
         // Decide how many VMs should be allocated.
-        if (succession >= 3 && timeout == 0) {
-            long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / succession, upperThreshold, rpsForOneVm);
+        if (upperThresholdExceedSuccession >= 3 && timeout == 0) {
+            long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / upperThresholdExceedSuccession, upperThreshold, rpsForOneVm);
             clusterFormationController.allocateVMs(numberOfVmToAllocate, clusterManager);
 
             timeout = 60;
-            succession = 0;
+            upperThresholdExceedSuccession = 0;
             requestInLastSeconds = 0;
+        }
+
+        // Decide how many VMs to remove
+        if (lowerThresholdExceedSuccession >= 3 && timeout == 0) {
+            long numberOfVmToRemove = computeNumberOfVmToRemove(requestInLastSeconds / lowerThresholdRequestsInLastSecconds, lowerThreshold, rpsForOneVm);
+            clusterFormationController.removeVMs(numberOfVmToRemove, clusterManager);
+
+            timeout = 60;
+            lowerThresholdExceedSuccession = 0;
+            lowerThresholdRequestsInLastSecconds = 0;
         }
 
     }
 
     // return the number of VMs that should be allocated to keep the resources utilisation < 70%.
     private long computeNumberOfVmToAllocate(long averageRequestRateInLastSeconds, long upperThreshold, long rpsForOneVm) {
+        long utilisationForFutureAllocationOfVms = rpsForOneVm * upperUtilisationFactor / 100;
         long requestsOverTheThreshold = averageRequestRateInLastSeconds - upperThreshold;
-        return requestsOverTheThreshold / rpsForOneVm + 1;
+        return requestsOverTheThreshold / utilisationForFutureAllocationOfVms + 1;
+    }
+
+
+    private long computeNumberOfVmToRemove(long averageRequestRateInLastSeconds, long lowerThreshold, long rpsForOneVm) {
+        long utilisationForFutureVmDeallocation = rpsForOneVm * lowerUtilisationFactor / 100;
+        long requestsUnderTheThreshold = lowerThreshold - averageRequestRateInLastSeconds;
+        return requestsUnderTheThreshold / utilisationForFutureVmDeallocation + 1;
     }
 
 }

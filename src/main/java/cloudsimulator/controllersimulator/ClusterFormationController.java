@@ -16,4 +16,11 @@ public class ClusterFormationController {
     }
 
 
+    public void removeVMs(long numberOfVmToRemove, ClusterManager clusterManager) {
+        clusterManager.getCluster().getTgGroup().stream()
+                .findFirst()
+                .ifPresent(tgGroup -> {
+                    tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
+                });
+    }
 }
