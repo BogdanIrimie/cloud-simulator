@@ -79,6 +79,8 @@ public class AutoClusterScale {
             lowerThresholdRequestsInLastSecconds = 0;
         }
 
+        clusterFormationController.incrementTime();
+
     }
 
     /**
