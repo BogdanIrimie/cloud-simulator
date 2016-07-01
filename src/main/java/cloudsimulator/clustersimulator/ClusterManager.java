@@ -3,7 +3,6 @@ package cloudsimulator.clustersimulator;
 import cloudsimulator.clustersimulator.dto.Cluster;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,7 +14,7 @@ import java.io.IOException;
 @Component
 public class ClusterManager {
 
-    private static final long RPS_FOR_VM = 1000;
+    private static final long RPS_FOR_ONE_VM = 1000;
     private Cluster cluster;
 
     /**
@@ -43,6 +42,10 @@ public class ClusterManager {
         return cluster;
     }
 
+    public long getRpsForOneVm() {
+        return RPS_FOR_ONE_VM;
+    }
+
     /**
      * Compute the maximum RPS supported by the Cluster managed by the ClusterManager.
      *
@@ -52,7 +55,7 @@ public class ClusterManager {
         return cluster.getCluster()
                 .stream()
                 .mapToLong(TCGroup::getVmNumber)
-                .sum() * RPS_FOR_VM;
+                .sum() * RPS_FOR_ONE_VM;
     }
 
 }
