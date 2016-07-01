@@ -7,11 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Implements operations on the Cluster.
+ */
 public class ClusterManager {
 
     private static final long RPS_FOR_VM = 100;
     private Cluster cluster;
 
+    /**
+     * Read Cluster configuration date from Json file.
+     */
     public ClusterManager() {
         ClassLoader classLoader = getClass().getClassLoader();
         String path = classLoader.getResource("clusterConfiguration.json").getFile();
@@ -25,10 +31,20 @@ public class ClusterManager {
         }
     }
 
+    /**
+     * Return the Cluster used by the ClusterManager.
+     *
+     * @return Cluster used by the ClusterManager.
+     */
     public Cluster getCluster() {
         return cluster;
     }
 
+    /**
+     * Compute the maximum RPS supported by the Cluster managed by the ClusterManager.
+     *
+     * @return maximum number of request that can be fulfilled by the Cluster in one second.
+     */
     public long computeMaxRps() {
         return cluster.getCluster()
                 .stream()
