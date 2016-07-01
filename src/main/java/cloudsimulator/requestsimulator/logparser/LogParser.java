@@ -127,17 +127,18 @@ public class LogParser {
         }
 
         // Notify other components of time passing, in 1 second increments.
-        if (time >= notificationTime) {
+        if (requestTime >= notificationTime) {
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
+
+            // each second notify the auto scaling
+            scale.scalePolicy(clusterManager, requestInTheLastSecond);
+
             // Recompute time per request because the cluster configuration might have changed.
             timePerRequest = 1.0 / clusterManager.computeMaxRps();
 
-            // each second notify the auto scaling
-            //scale.scalePolicy(clusterManager, requestInTheLastSecond);
-
             // Set next notification time with 1 second increment.
-            notificationTime = time + 1;
+            notificationTime = requestTime + 1;
             // TODO
             /*
             Time can be incremented with more then one second in current implementation.
