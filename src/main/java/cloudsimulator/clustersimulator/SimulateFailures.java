@@ -20,7 +20,7 @@ public class SimulateFailures {
      */
     public Cluster simulateFailures(Cluster cluster) {
 
-        cluster.getCluster().forEach(tcg -> {
+        cluster.getTgGroup().forEach(tcg -> {
             // Test each machine in the treatment category.
             for (int i = 0; i < tcg.getVmNumber(); i++) {
                 if (testVmFarFailure(tcg.getSla())) {
@@ -30,7 +30,7 @@ public class SimulateFailures {
         });
 
         // Remove a treatment category if there are no VMs in it.
-        cluster.getCluster().removeIf(tcg -> tcg.getVmNumber() == 0);
+        cluster.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
 
         return cluster;
     }
