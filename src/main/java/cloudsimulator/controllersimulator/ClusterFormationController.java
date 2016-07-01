@@ -3,6 +3,9 @@ package cloudsimulator.controllersimulator;
 import cloudsimulator.clustersimulator.ClusterManager;
 import org.springframework.stereotype.Component;
 
+/**
+ * Take decisions regarding cluster formation.
+ */
 @Component
 public class ClusterFormationController {
 
@@ -12,19 +15,33 @@ public class ClusterFormationController {
     private long numberOfVmToAllocate;
     private long numberOfVmToRemove;
 
+    /**
+     * Mark VMs for allocation, but some time is required before they are booted up.
+     *
+     * @param numberOfVmToAllocate
+     * @param clusterManager
+     */
     public void allocateVMs(long numberOfVmToAllocate, ClusterManager clusterManager) {
         startTimeOfAllocation = time;
         this.clusterManager = clusterManager;
         this.numberOfVmToAllocate = numberOfVmToAllocate;
     }
 
-
+    /**
+     * Mark VMs for removal, but some time is required before they are shut down.
+     *
+     * @param numberOfVmToRemove
+     * @param clusterManager
+     */
     public void removeVMs(long numberOfVmToRemove, ClusterManager clusterManager) {
         startTimeOfRemoval = time;
         this.clusterManager = clusterManager;
         this.numberOfVmToRemove = numberOfVmToRemove;
     }
 
+    /**
+     * Simulate passing of time in order to start or stop a VM.
+     */
     public void incrementTime() {
         time++;
         if (startTimeOfAllocation != -1 && time >=  startTimeOfAllocation + 40) {
@@ -37,6 +54,9 @@ public class ClusterFormationController {
         }
     }
 
+    /**
+     * After a VM is started, it is allocated to the cluster.
+     */
     private void allocate () {
         clusterManager.getCluster().getTgGroup().stream()
                 .findFirst()
@@ -45,6 +65,9 @@ public class ClusterFormationController {
                 });
     }
 
+    /**
+     * After a VM is stoped, it is removed from the cluster.
+     */
     private void remove() {
         clusterManager.getCluster().getTgGroup().stream()
                 .findFirst()
@@ -52,4 +75,5 @@ public class ClusterFormationController {
                     tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
                 });
     }
+    
 }
