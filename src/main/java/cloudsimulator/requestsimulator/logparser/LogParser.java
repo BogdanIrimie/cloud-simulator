@@ -1,6 +1,7 @@
 package cloudsimulator.requestsimulator.logparser;
 
 import cloudsimulator.clustersimulator.ClusterManager;
+import cloudsimulator.clustersimulator.SimulateFailures;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import cloudsimulator.controllersimulator.AutoClusterScale;
 import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
@@ -32,6 +33,9 @@ public class LogParser {
 
     @Autowired
     private AutoClusterScale scale;
+
+    @Autowired
+    private SimulateFailures simulateFailures;
 
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
@@ -133,6 +137,9 @@ public class LogParser {
 
             // each second notify the auto scaling
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
+
+            //simulate failure
+            // simulateFailures.simulateFailures(clusterManager.getCluster());
 
             // Recompute time per request because the cluster configuration might have changed.
             timePerRequest = 1.0 / clusterManager.computeMaxRps();
