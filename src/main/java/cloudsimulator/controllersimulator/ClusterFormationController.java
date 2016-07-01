@@ -75,5 +75,5 @@ public class ClusterFormationController {
                     tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
                 });
     }
-    
+
 }

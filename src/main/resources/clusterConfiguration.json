@@ -2,7 +2,7 @@
   "tgGroup": [
     {
       "name": "TC1",
-      "sla": 99.99,
+      "sla": 90.00,
       "vmNumber": 1
     },
     {

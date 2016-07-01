@@ -58,7 +58,7 @@ public class LogParser {
 
         Files.walk(Paths.get("traces"))
                 .filter(Files::isRegularFile)                                                                           // only consider files
-                .filter(filePath -> filePath.toString().contains("trimed"))                                            // only files that contain traces in name
+                .filter(filePath -> filePath.toString().contains("trimed"))                                             // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
                     System.out.println(filePath);
@@ -73,7 +73,7 @@ public class LogParser {
 
         long endTime = System.nanoTime();
         System.out.println("Time spend executing " + (endTime - startTime));
-        //httpRequestOperations.insert(requestList);                                                                      // insert last records in database
+        //httpRequestOperations.insert(requestList);                                                                    // insert last records in database
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
         System.out.println("VM number at end of simulation: " + vmNumberAtEnd);

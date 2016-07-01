@@ -14,7 +14,7 @@ import java.io.IOException;
 @Component
 public class ClusterManager {
 
-    private static final long RPS_FOR_ONE_VM = 1000;
+    private static final long RPS_FOR_ONE_VM = 100;
     private Cluster cluster;
 
     /**
