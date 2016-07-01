@@ -1,6 +1,7 @@
 package cloudsimulator.controllersimulator;
 
 import cloudsimulator.clustersimulator.ClusterManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AutoClusterScale {
+
+    @Autowired
+    ClusterFormationController clusterFormationController;
 
     private int utilisationFactor = 70;
     private int timeout = 0;
@@ -45,11 +49,10 @@ public class AutoClusterScale {
         // Decide how many VMs should be allocated.
         if (succession >= 3 && timeout == 0) {
             long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / succession, upperThreshold, rpsForOneVm);
-
-            ClusterFormationController clusterFormationController = new ClusterFormationController();
             clusterFormationController.allocateVMs(numberOfVmToAllocate, clusterManager);
 
             timeout = 60;
+            succession = 0;
             requestInLastSeconds = 0;
         }
 

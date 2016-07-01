@@ -1,7 +1,9 @@
 package cloudsimulator.controllersimulator;
 
 import cloudsimulator.clustersimulator.ClusterManager;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ClusterFormationController {
 
 
