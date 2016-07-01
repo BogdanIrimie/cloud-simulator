@@ -1,5 +1,7 @@
 package cloudsimulator.requestsimulator.logparser;
 
+import cloudsimulator.clustersimulator.ClusterManager;
+import cloudsimulator.controllersimulator.AutoClusterScale;
 import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
@@ -13,7 +15,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
 
 /**
  * Read all traces from multiple files. Simulate passing of time and compute response time for request.
@@ -25,8 +26,15 @@ public class LogParser {
     @Autowired
     private HttpRequestOperations httpRequestOperations;
 
+    @Autowired
+    private ClusterManager clusterManager;
+
+    @Autowired
+    private AutoClusterScale scale;
+
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
-    private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
+    private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
+    private long lastKnownRequestNumber;
     private List<RequestDetails> requestList = new ArrayList<>();
 
     /**
@@ -40,6 +48,8 @@ public class LogParser {
 
         long startTime = System.nanoTime();
 
+        // Instantiate ClusterManager
+        timePerRequest = 1.0 / clusterManager.computeMaxRps();
 
         Files.walk(Paths.get("traces"))
                 .filter(Files::isRegularFile)                                                                           // only consider files
@@ -84,7 +94,7 @@ public class LogParser {
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
-            notificationTime = time;
+            notificationTime = time + 1;
         }
 
         if (requestTime >= time) {
@@ -113,8 +123,23 @@ public class LogParser {
         }
 
         // Notify other components of time passing, in 1 second increments.
-        if (time >= notificationTime + 1) {
-            // TODO notify other components that 1 second has passed.
+        if (time >= notificationTime) {
+            requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
+            lastKnownRequestNumber = totalRequestCounter;
+            // Recompute time per request because the cluster configuration might have changed.
+            timePerRequest = 1.0 / clusterManager.computeMaxRps();
+
+            // each second notify the auto scaler
+            scale.scalePolicy(clusterManager, requestInTheLastSecond);
+
+            // Set next notification time with 1 second increment.
+            notificationTime = time + 1;
+            // TODO
+            /*
+            Time can be incremented with more then one second in current implementation.
+            Maybe add a small mechanism so simulate time passing in increments of 1 second
+            to send notifications to other components even when no requests are received.
+            */
         }
 
     }
