@@ -9,7 +9,7 @@ import java.util.Random;
  * Simulate failures for VMs. The lower is up time in SLA the higher the chance for a Vm to fail.
  */
 @Component
-public class SimulateFailures {
+public class FailureInjector {
 
     private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
     private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
@@ -20,7 +20,7 @@ public class SimulateFailures {
      * @param cluster ClusterManager for which failures will be simulated.
      * @return ClusterManager after failure simulation.
      */
-    public Cluster simulateFailures(Cluster cluster) {
+    public Cluster injectFailure(Cluster cluster) {
 
         cluster.getTgGroup().forEach(tcg -> {
             // Test each machine in the treatment category.

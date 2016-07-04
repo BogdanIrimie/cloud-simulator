@@ -1,4 +1,4 @@
-import cloudsimulator.clustersimulator.SimulateFailures;
+import cloudsimulator.clustersimulator.FailureInjector;
 import cloudsimulator.clustersimulator.dto.Cluster;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import org.junit.Test;
@@ -10,7 +10,7 @@ public class TestSimulatedFailure {
 
     @Test
     public void testVmForFailure() {
-        SimulateFailures simulateFailures = new SimulateFailures();
+        FailureInjector failureInjector = new FailureInjector();
         double sla = 80.00;
         long vmCount = 1;
         Cluster cluster =
@@ -23,7 +23,7 @@ public class TestSimulatedFailure {
 
         long secondsToFailure = 0;
         while (cluster.getTgGroup().size() > 0) {
-            simulateFailures.simulateFailures(cluster);
+            failureInjector.injectFailure(cluster);
             secondsToFailure++;
         }
 
