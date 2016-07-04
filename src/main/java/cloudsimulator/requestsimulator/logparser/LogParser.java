@@ -8,6 +8,8 @@ import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
 import cloudsimulator.utilities.CostComputer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +43,8 @@ public class LogParser {
     @Autowired
     private CostComputer costComputer;
 
+    private static final Logger logger = LoggerFactory.getLogger("LogParser.class");
+
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
     private long lastKnownRequestNumber;
@@ -65,7 +69,7 @@ public class LogParser {
                 .filter(filePath -> filePath.toString().contains("trimed"))                                             // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
-                    System.out.println(filePath);
+                    logger.info("Trace path:                     " + filePath);
                     try {
                         Files.lines(Paths.get(filePath.toString()), Charset.forName("Cp1252"))                          // Open file and read lines
                                 .map(line -> line.split("\\s+"))
@@ -76,12 +80,12 @@ public class LogParser {
                 });
 
         long endTime = System.nanoTime();
-        System.out.println("Time spend executing:           " + (endTime - startTime) / 1000000000);
+        logger.info("Time spend executing:           " + (endTime - startTime) / 1000000000);
         //httpRequestOperations.insert(requestList);                                                                    // insert last records in database
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
-        System.out.println("VM number at end of simulation: " + vmNumberAtEnd);
-        System.out.println("Total cost:                     " + costComputer.getTotalCost());
+        logger.info("VM number at end of simulation: " + vmNumberAtEnd);
+        logger.info("Total cost:                     " + costComputer.getTotalCost());
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }

@@ -1,6 +1,8 @@
 package cloudsimulator;
 
 import cloudsimulator.requestsimulator.simulators.Simulator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,13 +14,17 @@ public class Client implements CommandLineRunner {
     @Autowired
     Simulator simulator;
 
+    private static final Logger logger = LoggerFactory.getLogger(Client.class);
+
     public static void main (String[] args) {
         SpringApplication.run(Client.class, args);
     }
 
     @Override
     public void run(String... strings) throws Exception {
+        logger.info("<-----------------------Start---------------------->");
         simulator.startSimulation();
+        logger.info(" <-----------------------End---------------------->");
     }
 
 }
