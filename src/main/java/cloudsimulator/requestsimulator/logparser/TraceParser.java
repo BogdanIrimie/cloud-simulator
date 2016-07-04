@@ -4,7 +4,7 @@ import cloudsimulator.clustersimulator.ClusterManager;
 import cloudsimulator.clustersimulator.FailureInjector;
 import cloudsimulator.clustersimulator.dto.TCGroup;
 import cloudsimulator.controllersimulator.AutoClusterScale;
-import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
+import cloudsimulator.requestsimulator.dao.RequestDetailsOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
 import cloudsimulator.utilities.CostComputer;
@@ -26,10 +26,10 @@ import java.util.List;
  * All the results are saved in database.
  */
 @Component
-public class LogParser {
+public class TraceParser {
 
     @Autowired
-    private HttpRequestOperations httpRequestOperations;
+    private RequestDetailsOperations requestDetailsOperations;
 
     @Autowired
     private ClusterManager clusterManager;
@@ -56,8 +56,8 @@ public class LogParser {
      * @return simulation results.
      * @throws IOException
      */
-    public SimulationStatistics parseLogs() throws IOException {
-        httpRequestOperations.deleteAll();
+    public SimulationStatistics parseTraces() throws IOException {
+        requestDetailsOperations.deleteAll();
 
         long startTime = System.nanoTime();
 
@@ -81,13 +81,13 @@ public class LogParser {
 
         long endTime = System.nanoTime();
         logger.info("Time spend executing:           " + (endTime - startTime) / 1000000000);
-        //httpRequestOperations.insert(requestList);                                                                    // insert last records in database
+        //requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
-        logger.info("Total cost:                     " + costComputer.getTotalCost());
         return new SimulationStatistics(
-                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
+                totalDelay, totalRequestCounter, fulfilledRequestCounter,
+                timeOutedRequestCounter, costComputer.getTotalCost());
     }
 
     /**
@@ -135,7 +135,7 @@ public class LogParser {
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
         if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
-            //httpRequestOperations.insert(requestList);
+            //requestDetailsOperations.insert(requestList);
             requestList = new ArrayList<>();
         }
 

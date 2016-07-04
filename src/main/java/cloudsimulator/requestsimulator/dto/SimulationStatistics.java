@@ -1,21 +1,39 @@
 package cloudsimulator.requestsimulator.dto;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Component;
+
 /**
  * Output of a simulation.
  */
+@Component
 public class SimulationStatistics {
 
-    private double totalDelay = 0;
-    private long totalRequestCounter = 0, fulfilledRequestCounter = 0, timeOutedRequestCounter = 0;
+    @Id
+    private String id;
+    private double totalDelay;
+    private long totalRequestCounter;
+    private long fulfilledRequestCounter;
+    private long timeOutedRequestCounter;
+    private long totalCost;
 
     public SimulationStatistics() {
     }
 
-    public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter, long timeOutedRequestCounter) {
+    public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter, long timeOutedRequestCounter, long totalCost) {
         this.totalDelay = totalDelay;
         this.totalRequestCounter = totalRequestCounter;
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
+        this.totalCost = totalCost;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public double getTotalDelay() {
@@ -48,5 +66,13 @@ public class SimulationStatistics {
 
     public void setTimeOutedRequestCounter(long timeOutedRequestCounter) {
         this.timeOutedRequestCounter = timeOutedRequestCounter;
+    }
+
+    public long getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(long totalCost) {
+        this.totalCost = totalCost;
     }
 }
