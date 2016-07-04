@@ -18,8 +18,8 @@ public class Simulator {
         SimulationStatistics simulationStatistics = logParser.parseLogs();
         double avgResponseTime = simulationStatistics.getTotalDelay()
                 / simulationStatistics.getFulfilledRequestCounter();
-        System.out.printf("Average response time is: %f\n", avgResponseTime);
-        System.out.println("Number of requests dropped: " + simulationStatistics.getTimeOutedRequestCounter());
+        System.out.printf("Average response time is:       %f\n", avgResponseTime);
+        System.out.println("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
     }
 
 }

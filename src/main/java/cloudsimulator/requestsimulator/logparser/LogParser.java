@@ -76,12 +76,12 @@ public class LogParser {
                 });
 
         long endTime = System.nanoTime();
-        System.out.println("Time spend executing " + (endTime - startTime));
+        System.out.println("Time spend executing:           " + (endTime - startTime) / 1000000000);
         //httpRequestOperations.insert(requestList);                                                                    // insert last records in database
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
         System.out.println("VM number at end of simulation: " + vmNumberAtEnd);
-        System.out.println("Total cost is: " + costComputer.getTotalCost());
+        System.out.println("Total cost:                     " + costComputer.getTotalCost());
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }
