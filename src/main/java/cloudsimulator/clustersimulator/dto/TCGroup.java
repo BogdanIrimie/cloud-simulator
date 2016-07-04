@@ -8,6 +8,7 @@ public class TCGroup {
     private String name;
     private double sla;
     private long  vmNumber;
+    private long cost;
 
     public TCGroup() {
     }
@@ -40,5 +41,13 @@ public class TCGroup {
 
     public void setVmNumber(long vmNumber) {
         this.vmNumber = vmNumber;
+    }
+
+    public long getCost() {
+        return cost;
+    }
+
+    public void setCost(long cost) {
+        this.cost = cost;
     }
 }

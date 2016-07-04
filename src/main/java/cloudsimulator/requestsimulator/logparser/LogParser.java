@@ -7,6 +7,7 @@ import cloudsimulator.controllersimulator.AutoClusterScale;
 import cloudsimulator.requestsimulator.dao.HttpRequestOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
+import cloudsimulator.utilities.CostComputer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,9 @@ public class LogParser {
 
     @Autowired
     private FailureInjector failureInjector;
+
+    @Autowired
+    private CostComputer costComputer;
 
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
@@ -77,6 +81,7 @@ public class LogParser {
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
         System.out.println("VM number at end of simulation: " + vmNumberAtEnd);
+        System.out.println("Total cost is: " + costComputer.getTotalCost());
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter);
     }
@@ -135,11 +140,14 @@ public class LogParser {
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
 
+            // compute cost
+            costComputer.addCostForLastSecond(clusterManager);
+
             // each second notify the auto scaling
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
             //simulate failure
-            // injectFailure.injectFailure(clusterManager.getCluster());
+            // failureInjector.injectFailure(clusterManager.getCluster());
 
             // Recompute time per request because the cluster configuration might have changed.
             timePerRequest = 1.0 / clusterManager.computeMaxRps();

@@ -3,17 +3,20 @@
     {
       "name": "TC1",
       "sla": 90.00,
-      "vmNumber": 1
+      "vmNumber": 1,
+      "cost": 3
     },
     {
       "name": "TC2",
       "sla": 70.00,
-      "vmNumber": 1
+      "vmNumber": 1,
+      "cost": 2
     },
     {
       "name": "TC1",
       "sla": 50.00,
-      "vmNumber": 1
+      "vmNumber": 1,
+      "cost": 1
     }
   ]
 }
