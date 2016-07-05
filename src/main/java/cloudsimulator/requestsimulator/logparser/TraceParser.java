@@ -66,7 +66,7 @@ public class TraceParser {
 
         Files.walk(Paths.get("traces"))
                 .filter(Files::isRegularFile)                                                                           // only consider files
-                .filter(filePath -> filePath.toString().contains("trimed"))                                             // only files that contain traces in name
+                .filter(filePath -> filePath.toString().contains("trimmed"))                                             // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
                     logger.info("Trace path:                     " + filePath);
