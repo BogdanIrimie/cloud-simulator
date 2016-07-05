@@ -2,7 +2,7 @@
 CloudClusterSim is a cluster formation simulator. The main objective of CCS is to allow testing of different algorithms for cluster formation. The simulator can use traces from real world in order to test the performance of cluster formation algorithms.
 
 ## Installation
-CCS is written in Java 1.8 and has the following requirements for build:
+CCS is written in Java 1.8 and has the following requirements for building and running:
 * maven 3.3.3 or newer
 * JDK 1.8 or newer
 * MongoDB 3.2 or newer
