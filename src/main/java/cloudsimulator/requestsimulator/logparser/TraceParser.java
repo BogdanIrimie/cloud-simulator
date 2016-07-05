@@ -8,6 +8,7 @@ import cloudsimulator.requestsimulator.dao.RequestDetailsOperations;
 import cloudsimulator.requestsimulator.dto.RequestDetails;
 import cloudsimulator.requestsimulator.dto.SimulationStatistics;
 import cloudsimulator.utilities.CostComputer;
+import cloudsimulator.utilities.SimSettingsExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,12 @@ public class TraceParser {
         // Instantiate ClusterManager
         timePerRequest = 1.0 / clusterManager.computeMaxRps();
 
-        Files.walk(Paths.get("traces"))
+        String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
+        String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
+
+        Files.walk(Paths.get(pathToTraces))
                 .filter(Files::isRegularFile)                                                                           // only consider files
-                .filter(filePath -> filePath.toString().contains("trimmed"))                                             // only files that contain traces in name
+                .filter(filePath -> filePath.toString().contains(traceNameRegex))                                             // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
                     logger.info("Trace path:                     " + filePath);

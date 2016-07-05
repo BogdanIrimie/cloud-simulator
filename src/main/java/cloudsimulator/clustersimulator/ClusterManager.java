@@ -2,7 +2,10 @@ package cloudsimulator.clustersimulator;
 
 import cloudsimulator.clustersimulator.dto.Cluster;
 import cloudsimulator.clustersimulator.dto.TCGroup;
+import cloudsimulator.utilities.SimSettingsExtractor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -14,13 +17,16 @@ import java.io.IOException;
 @Component
 public class ClusterManager {
 
-    private static final long RPS_FOR_ONE_VM = 100;
+    private long rpsForOneVm;
     private Cluster cluster;
+    private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
     /**
      * Read Cluster configuration date from Json file.
      */
     public ClusterManager() {
+        this. rpsForOneVm = SimSettingsExtractor.getSimulationSettings().getRpsForVm();
+
         ClassLoader classLoader = getClass().getClassLoader();
         String path = classLoader.getResource("clusterConfiguration.json").getFile();
 
@@ -29,7 +35,7 @@ public class ClusterManager {
         try {
             cluster = mapper.readValue(new File(path), Cluster.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -43,7 +49,7 @@ public class ClusterManager {
     }
 
     public long getRpsForOneVm() {
-        return RPS_FOR_ONE_VM;
+        return rpsForOneVm;
     }
 
     /**
@@ -55,7 +61,7 @@ public class ClusterManager {
         return cluster.getTgGroup()
                 .stream()
                 .mapToLong(TCGroup::getVmNumber)
-                .sum() * RPS_FOR_ONE_VM;
+                .sum() * rpsForOneVm;
     }
 
 }

@@ -1,6 +1,7 @@
 package cloudsimulator.controllersimulator;
 
 import cloudsimulator.clustersimulator.ClusterManager;
+import cloudsimulator.utilities.SimSettingsExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,26 @@ public class AutoClusterScale {
     @Autowired
     ClusterFormationController clusterFormationController;
 
-    private int upperUtilisationFactor = 70;
-    private int lowerUtilisationFactor = 60;
-    private int timeout = 0;
-    private int upperThresholdExceedSuccession = 0;
-    private int lowerThresholdExceedSuccession = 0;
+    private int upperUtilisationFactor;
+    private int lowerUtilisationFactor;
+    private int timeout;
+    private int upperThresholdExceedSuccession;
+    private int lowerThresholdExceedSuccession;
+    private int upperThresholdExceedSuccessionLimit;
+    private int lowerThresholdExceedSuccessionLimit;
+    private int vmCreationTimeout;
+    private int vmTerminationTimeout;
     private long requestInLastSeconds;
-    private long lowerThresholdRequestsInLastSecconds;
+    private long lowerThresholdRequestsInLastSeconds;
+
+    public AutoClusterScale() {
+        this.upperUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getUpperUtilisationThreshold();
+        this.lowerUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getLowerUtilisationThreshold();
+        this.upperThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getUpperThresholdExceedSuccessionLimit();
+        this.lowerThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getLowerThresholdExceedSuccessionLimit();
+        this.vmCreationTimeout = SimSettingsExtractor.getSimulationSettings().getVmCreationTimeout();
+        this.vmTerminationTimeout = SimSettingsExtractor.getSimulationSettings().getVmTerminationTimeout();
+    }
 
     /**
      * Decide to scale when the threshold is exceeded for multiple times in a row
@@ -48,11 +62,11 @@ public class AutoClusterScale {
         // if the lower threshold is exceeded multiple times, increase the lowerThresholdExceedSuccession.
         if (requestInLastSecond < lowerThreshold) {
             lowerThresholdExceedSuccession++;
-            lowerThresholdRequestsInLastSecconds += requestInLastSecond;
+            lowerThresholdRequestsInLastSeconds += requestInLastSecond;
         }
         else {
             lowerThresholdExceedSuccession = 0;
-            lowerThresholdRequestsInLastSecconds = 0;
+            lowerThresholdRequestsInLastSeconds = 0;
         }
 
         if (timeout > 0) {
@@ -60,23 +74,23 @@ public class AutoClusterScale {
         }
 
         // Allocate VMs if the upper threshold was reached several consecutive times.
-        if (upperThresholdExceedSuccession >= 3 && timeout == 0) {
+        if (upperThresholdExceedSuccession >= upperThresholdExceedSuccessionLimit && timeout == 0) {
             long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / upperThresholdExceedSuccession, upperThreshold, rpsForOneVm);
             clusterFormationController.allocateVMs(numberOfVmToAllocate, clusterManager);
 
-            timeout = 60;
+            timeout = vmCreationTimeout;
             upperThresholdExceedSuccession = 0;
             requestInLastSeconds = 0;
         }
 
         // Remove VMs if the lower threshold was reached several times.
-        if (lowerThresholdExceedSuccession >= 3 && timeout == 0) {
-            long numberOfVmToRemove = computeNumberOfVmToRemove(requestInLastSeconds / lowerThresholdRequestsInLastSecconds, lowerThreshold, rpsForOneVm);
+        if (lowerThresholdExceedSuccession >= lowerThresholdExceedSuccessionLimit && timeout == 0) {
+            long numberOfVmToRemove = computeNumberOfVmToRemove(requestInLastSeconds / lowerThresholdRequestsInLastSeconds, lowerThreshold, rpsForOneVm);
             clusterFormationController.removeVMs(numberOfVmToRemove, clusterManager);
 
-            timeout = 60;
+            timeout = vmTerminationTimeout;
             lowerThresholdExceedSuccession = 0;
-            lowerThresholdRequestsInLastSecconds = 0;
+            lowerThresholdRequestsInLastSeconds = 0;
         }
 
         clusterFormationController.incrementTime();

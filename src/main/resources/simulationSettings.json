@@ -1,10 +1,12 @@
 {
   "startVmDelay": 40,
   "stopVmDelay": 15,
+  "vmCreationTimeout": 60,
+  "vmTerminationTimeout": 60,
   "lowerUtilisationThreshold": 50,
   "upperUtilisationThreshold": 70,
-  "lowerThresholdExceedSuccession": 3,
-  "upperThresholdExceedSuccession": 3,
+  "lowerThresholdExceedSuccessionLimit": 3,
+  "upperThresholdExceedSuccessionLimit": 3,
   "rpsForVm": 100,
   "pathToTraces": "traces",
   "regexForTracesName": "trimmed"
