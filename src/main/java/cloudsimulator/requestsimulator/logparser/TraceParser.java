@@ -66,7 +66,7 @@ public class TraceParser {
         timePerRequest = 1.0 / clusterManager.computeMaxRps();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
-        String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
+        String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
 
         Files.walk(Paths.get(pathToTraces))
                 .filter(Files::isRegularFile)                                                                           // only consider files

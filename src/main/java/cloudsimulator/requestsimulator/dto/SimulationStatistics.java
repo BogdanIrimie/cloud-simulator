@@ -1,5 +1,7 @@
 package cloudsimulator.requestsimulator.dto;
 
+import cloudsimulator.utilities.SimSettingsExtractor;
+import cloudsimulator.utilities.dto.SimulationSettings;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,7 @@ public class SimulationStatistics {
     private long fulfilledRequestCounter;
     private long timeOutedRequestCounter;
     private long totalCost;
+    private SimulationSettings simulationSettings;
 
     public SimulationStatistics() {
     }
@@ -31,6 +34,7 @@ public class SimulationStatistics {
         this.totalCost = totalCost;
         this.avgDelay = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
+        this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
     }
 
     public String getId() {

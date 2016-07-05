@@ -3,7 +3,7 @@
   "stopVmDelay": 15,
   "vmCreationTimeout": 60,
   "vmTerminationTimeout": 60,
-  "lowerUtilisationThreshold": 50,
+  "lowerUtilisationThreshold": 60,
   "upperUtilisationThreshold": 70,
   "lowerThresholdExceedSuccessionLimit": 3,
   "upperThresholdExceedSuccessionLimit": 3,
