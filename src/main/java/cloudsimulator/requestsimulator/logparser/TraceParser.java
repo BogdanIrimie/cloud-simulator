@@ -80,14 +80,15 @@ public class TraceParser {
                 });
 
         long endTime = System.nanoTime();
-        logger.info("Time spend executing:           " + (endTime - startTime) / 1000000000);
-        //requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
+        long executionTime = (endTime - startTime) / 1000000000;
+        logger.info("Time spend executing:           " + executionTime + " seconds");
+        // requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
 
         long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter,
-                timeOutedRequestCounter, costComputer.getTotalCost());
+                timeOutedRequestCounter, costComputer.getTotalCost(), executionTime);
     }
 
     /**
@@ -135,7 +136,7 @@ public class TraceParser {
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
         if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
-            //requestDetailsOperations.insert(requestList);
+            // requestDetailsOperations.insert(requestList);
             requestList = new ArrayList<>();
         }
 
