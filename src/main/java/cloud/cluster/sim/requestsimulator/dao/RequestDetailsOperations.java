@@ -1,6 +1,6 @@
-package cloudsimulator.requestsimulator.dao;
+package cloud.cluster.sim.requestsimulator.dao;
 
-import cloudsimulator.requestsimulator.dto.RequestDetails;
+import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**

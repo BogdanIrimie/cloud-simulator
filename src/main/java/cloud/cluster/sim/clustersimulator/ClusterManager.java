@@ -1,8 +1,8 @@
-package cloudsimulator.clustersimulator;
+package cloud.cluster.sim.clustersimulator;
 
-import cloudsimulator.clustersimulator.dto.Cluster;
-import cloudsimulator.clustersimulator.dto.TCGroup;
-import cloudsimulator.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.clustersimulator.dto.TCGroup;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

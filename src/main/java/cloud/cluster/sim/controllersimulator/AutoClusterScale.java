@@ -1,7 +1,7 @@
-package cloudsimulator.controllersimulator;
+package cloud.cluster.sim.controllersimulator;
 
-import cloudsimulator.clustersimulator.ClusterManager;
-import cloudsimulator.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

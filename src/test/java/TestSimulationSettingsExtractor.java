@@ -1,4 +1,4 @@
-import cloudsimulator.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.junit.Test;
 
 public class TestSimulationSettingsExtractor {

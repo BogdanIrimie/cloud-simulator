@@ -1,6 +1,6 @@
-package cloudsimulator.controllersimulator;
+package cloud.cluster.sim.controllersimulator;
 
-import cloudsimulator.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.ClusterManager;
 import org.springframework.stereotype.Component;
 
 /**

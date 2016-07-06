@@ -1,4 +1,4 @@
-package cloudsimulator.utilities.dto;
+package cloud.cluster.sim.utilities.dto;
 
 public class SimulationSettings {
     private long startVmDelay = 40;

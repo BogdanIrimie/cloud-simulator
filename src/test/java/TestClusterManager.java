@@ -1,5 +1,5 @@
-import cloudsimulator.clustersimulator.ClusterManager;
-import cloudsimulator.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import org.junit.Test;
 
 public class TestClusterManager {

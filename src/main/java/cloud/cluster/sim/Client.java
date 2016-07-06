@@ -1,6 +1,6 @@
-package cloudsimulator;
+package cloud.cluster.sim;
 
-import cloudsimulator.requestsimulator.simulators.Simulator;
+import cloud.cluster.sim.requestsimulator.simulators.Simulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

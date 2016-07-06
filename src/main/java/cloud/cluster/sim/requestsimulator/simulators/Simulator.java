@@ -1,8 +1,8 @@
-package cloudsimulator.requestsimulator.simulators;
+package cloud.cluster.sim.requestsimulator.simulators;
 
-import cloudsimulator.requestsimulator.dao.SimulationStatisticsOperations;
-import cloudsimulator.requestsimulator.dto.SimulationStatistics;
-import cloudsimulator.requestsimulator.logparser.TraceParser;
+import cloud.cluster.sim.requestsimulator.logparser.TraceParser;
+import cloud.cluster.sim.requestsimulator.dao.SimulationStatisticsOperations;
+import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

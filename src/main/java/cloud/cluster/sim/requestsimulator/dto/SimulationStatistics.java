@@ -1,7 +1,7 @@
-package cloudsimulator.requestsimulator.dto;
+package cloud.cluster.sim.requestsimulator.dto;
 
-import cloudsimulator.utilities.SimSettingsExtractor;
-import cloudsimulator.utilities.dto.SimulationSettings;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 

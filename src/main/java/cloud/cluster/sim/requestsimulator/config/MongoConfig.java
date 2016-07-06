@@ -1,4 +1,4 @@
-package cloudsimulator.requestsimulator.config;
+package cloud.cluster.sim.requestsimulator.config;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;

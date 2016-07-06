@@ -1,6 +1,6 @@
-import cloudsimulator.clustersimulator.FailureInjector;
-import cloudsimulator.clustersimulator.dto.Cluster;
-import cloudsimulator.clustersimulator.dto.TCGroup;
+import cloud.cluster.sim.clustersimulator.FailureInjector;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.TCGroup;
 import org.junit.Test;
 
 import java.util.Arrays;

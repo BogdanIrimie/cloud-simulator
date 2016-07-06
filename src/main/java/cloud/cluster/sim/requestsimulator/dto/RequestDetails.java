@@ -1,4 +1,4 @@
-package cloudsimulator.requestsimulator.dto;
+package cloud.cluster.sim.requestsimulator.dto;
 
 import org.springframework.data.annotation.Id;
 

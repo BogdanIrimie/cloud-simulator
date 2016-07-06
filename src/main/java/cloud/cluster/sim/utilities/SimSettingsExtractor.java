@@ -1,6 +1,6 @@
-package cloudsimulator.utilities;
+package cloud.cluster.sim.utilities;
 
-import cloudsimulator.utilities.dto.SimulationSettings;
+import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

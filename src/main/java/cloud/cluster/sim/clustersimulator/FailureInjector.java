@@ -1,6 +1,6 @@
-package cloudsimulator.clustersimulator;
+package cloud.cluster.sim.clustersimulator;
 
-import cloudsimulator.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;

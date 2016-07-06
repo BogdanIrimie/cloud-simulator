@@ -1,14 +1,14 @@
-package cloudsimulator.requestsimulator.logparser;
+package cloud.cluster.sim.requestsimulator.logparser;
 
-import cloudsimulator.clustersimulator.ClusterManager;
-import cloudsimulator.clustersimulator.FailureInjector;
-import cloudsimulator.clustersimulator.dto.TCGroup;
-import cloudsimulator.controllersimulator.AutoClusterScale;
-import cloudsimulator.requestsimulator.dao.RequestDetailsOperations;
-import cloudsimulator.requestsimulator.dto.RequestDetails;
-import cloudsimulator.requestsimulator.dto.SimulationStatistics;
-import cloudsimulator.utilities.CostComputer;
-import cloudsimulator.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.clustersimulator.dto.TCGroup;
+import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.FailureInjector;
+import cloud.cluster.sim.controllersimulator.AutoClusterScale;
+import cloud.cluster.sim.requestsimulator.dao.RequestDetailsOperations;
+import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
+import cloud.cluster.sim.utilities.CostComputer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package cloudsimulator.clustersimulator.dto;
+package cloud.cluster.sim.clustersimulator.dto;
 
 import java.util.List;
 
