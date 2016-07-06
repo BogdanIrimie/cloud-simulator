@@ -11,4 +11,4 @@ The project can be build by maven using
 `mvn package`
 
 ## Usage
-The simulator allows users to define thier cluster and parameters for their simulation in JSOn files. Once the parameters are defined, the program can be started as with `java -jar cloud-simulator.jar`
+The simulator allows users to define their cluster and parameters for their simulation in JSON files. Once the parameters are defined, the program can be started with `java -jar cloud-simulator.jar`
