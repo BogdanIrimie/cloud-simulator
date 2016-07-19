@@ -11,7 +11,7 @@ done
 
 # Merge sort all files using time field and split the output.
 echo "Start merge sort!"
-sort -m -nk 2 --batch-size=1021 *_sorted | split -d -l 8000000 - trace_
+sort -m -nk 2 --batch-size=1021 merged/*_sorted | split -d -l 8000000 - merged/trace_
 echo "Finish merge sort!"
 
 # Remove intermediary files.
