@@ -13,8 +13,8 @@ public class CostComputer {
     }
 
     public void addCostForLastSecond(ClusterManager clusterManager) {
-        totalCost += clusterManager.getCluster().getTgGroup().stream()
-                .mapToLong(tcGroup-> tcGroup.getCost() * tcGroup.getVmNumber())
+        totalCost += clusterManager.getClusterNg().getVms().stream()
+                .mapToLong(vm -> vm.getTreatmentCategory().getCost())
                 .sum();
     }
 

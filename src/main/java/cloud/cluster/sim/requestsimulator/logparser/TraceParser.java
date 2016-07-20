@@ -1,8 +1,6 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
-import cloud.cluster.sim.clustersimulator.dto.ClusterNg;
-import cloud.cluster.sim.clustersimulator.dto.TCGroup;
-import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.clustersimulator.dto.*;
 import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import cloud.cluster.sim.clustersimulator.ClusterManager;
@@ -66,7 +64,7 @@ public class TraceParser {
         long startTime = System.nanoTime();
 
         // Instantiate ClusterManager
-        timePerRequest = 1.0 / 3000;//1.0 / clusterManager.computeMaxRps();
+        timePerRequest = 1.0 / 1000;//1.0 / clusterManager.computeMaxRps();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
         String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
@@ -91,7 +89,7 @@ public class TraceParser {
         logger.info("Time spend executing:           " + executionTime + " seconds");
         // requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
 
-        long vmNumberAtEnd = clusterManager.getCluster().getTgGroup().stream().mapToLong(TCGroup::getVmNumber).sum();
+        long vmNumberAtEnd = clusterManager.getClusterNg().getVms().size();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter,
@@ -112,9 +110,9 @@ public class TraceParser {
     }
 
     private List<Vm> vms = new ArrayList<Vm>(){{
-        add(new Vm());
-        add(new Vm());
-        add(new Vm());
+        add(new Vm(new Task(), new TreatmentCategory()));
+        add(new Vm(new Task(), new TreatmentCategory()));
+        add(new Vm(new Task(), new TreatmentCategory()));
     }};
 
     private int vmIndex = 0;
@@ -136,13 +134,13 @@ public class TraceParser {
         if (requestTime + taskTimeout >= time) {
 
             Vm vm = vms.get(vmIndex++);
-            if (time  < vm.getTaskEndTime()) {
-                time = vm.getTaskEndTime();
+            if (time  < vm.getTask().getTaskEndTime()) {
+                time = vm.getTask().getTaskEndTime();
             }
 
-            vm.setTaskArrivalTime(requestTime);
-            vm.setTaskStartTime(time);
-            vm.setTaskEndTime(time + timePerRequest);
+            vm.getTask().setTaskArrivalTime(requestTime);
+            vm.getTask().setTaskStartTime(time);
+            vm.getTask().setTaskEndTime(time + timePerRequest);
 
             responseTime = computeResponseTime(vm);
             totalDelay += responseTime;
@@ -158,7 +156,7 @@ public class TraceParser {
     }
 
     private double computeResponseTime(Vm vm) {
-        return vm.getTaskEndTime() - vm.getTaskArrivalTime();
+        return vm.getTask().getTaskEndTime() - vm.getTask().getTaskArrivalTime();
     }
 
     /**
@@ -166,64 +164,64 @@ public class TraceParser {
      *
      * @param requestDetails contains all the details necessary to compute response time for a trace.
      */
-    private void simulateTimePassing(RequestDetails requestDetails) {
-        double requestTime = requestDetails.getRequestArrivalTime();
-        if (time < 0) {
-            time = requestTime;
-            notificationTime = time + 1;
-        }
-
-        if (requestTime >= time) {
-            time = requestTime;
-        }
-
-        if (requestTime + taskTimeout >= time) {
-            time += timePerRequest;
-            fulfilledRequestCounter++;
-
-            responseTime = time - requestTime;
-            totalDelay += responseTime;
-        }
-        else {
-            timeOutedRequestCounter++;
-            responseTime = -1;
-        }
-
-        requestDetails.setResponseTime(responseTime);
-        requestList.add(requestDetails);
-
-        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
-        if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
-            // requestDetailsOperations.insert(requestList);
-            requestList = new ArrayList<>();
-        }
-
-        // Notify other components of time passing, in 1 second increments.
-        if (requestTime >= notificationTime) {
-            requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
-            lastKnownRequestNumber = totalRequestCounter;
-
-            // compute cost
-            costComputer.addCostForLastSecond(clusterManager);
-
-            // each second notify the auto scaling
-            scale.scalePolicy(clusterManager, requestInTheLastSecond);
-
-            //simulate failure
-            // failureInjector.injectFailure(clusterManager.getCluster());
-
-            // Recompute time per request because the cluster configuration might have changed.
-            timePerRequest = 1.0 / clusterManager.computeMaxRps();
-
-            // Set next notification time with 1 second increment.
-            notificationTime = requestTime + 1;
-            // TODO
-            /*
-            Time can be incremented with more then one second in current implementation.
-            Maybe add a small mechanism so simulate time passing in increments of 1 second
-            to send notifications to other components even when no requests are received.
-            */
-        }
-
-    }
+//    private void simulateTimePassing(RequestDetails requestDetails) {
+//        double requestTime = requestDetails.getRequestArrivalTime();
+//        if (time < 0) {
+//            time = requestTime;
+//            notificationTime = time + 1;
+//        }
+//
+//        if (requestTime >= time) {
+//            time = requestTime;
+//        }
+//
+//        if (requestTime + taskTimeout >= time) {
+//            time += timePerRequest;
+//            fulfilledRequestCounter++;
+//
+//            responseTime = time - requestTime;
+//            totalDelay += responseTime;
+//        }
+//        else {
+//            timeOutedRequestCounter++;
+//            responseTime = -1;
+//        }
+//
+//        requestDetails.setResponseTime(responseTime);
+//        requestList.add(requestDetails);
+//
+//        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
+//        if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
+//            // requestDetailsOperations.insert(requestList);
+//            requestList = new ArrayList<>();
+//        }
+//
+//        // Notify other components of time passing, in 1 second increments.
+//        if (requestTime >= notificationTime) {
+//            requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
+//            lastKnownRequestNumber = totalRequestCounter;
+//
+//            // compute cost
+//            costComputer.addCostForLastSecond(clusterManager);
+//
+//            // each second notify the auto scaling
+//            scale.scalePolicy(clusterManager, requestInTheLastSecond);
+//
+//            //simulate failure
+//            // failureInjector.injectFailure(clusterManager.getCluster());
+//
+//            // Recompute time per request because the cluster configuration might have changed.
+//            timePerRequest = 1.0 / clusterManager.computeMaxRps();
+//
+//            // Set next notification time with 1 second increment.
+//            notificationTime = requestTime + 1;
+//            // TODO
+//            /*
+//            Time can be incremented with more then one second in current implementation.
+//            Maybe add a small mechanism so simulate time passing in increments of 1 second
+//            to send notifications to other components even when no requests are received.
+//            */
+//        }
+//
+//    }
 }

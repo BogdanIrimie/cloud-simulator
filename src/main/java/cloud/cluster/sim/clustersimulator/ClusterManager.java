@@ -20,6 +20,7 @@ public class ClusterManager {
 
     private long rpsForOneVm;
     private Cluster cluster;
+    private ClusterNg clusterNg;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
     /**
@@ -40,7 +41,6 @@ public class ClusterManager {
         }
 
         // Cluster to ClusterNg
-        ClusterNg clusterNg = new ClusterNg();
         List<Vm> vmList = new ArrayList<Vm>();
         cluster.getTgGroup().stream().forEach(tcGroup -> {
             TreatmentCategory tc =  new TreatmentCategory(tcGroup.getName(), tcGroup.getSla(), tcGroup.getCost());
@@ -48,17 +48,16 @@ public class ClusterManager {
                 vmList.add(new Vm(tc));
             }
         });
-
-        clusterNg.setVms(vmList);
+        clusterNg = new ClusterNg(vmList);
     }
 
     /**
-     * Return the Cluster used by the ClusterManager.
+     * Return the ClusterNg used by the ClusterManager.
      *
-     * @return Cluster used by the ClusterManager.
+     * @return ClusterNg used by the ClusterManager.
      */
-    public Cluster getCluster() {
-        return cluster;
+    public ClusterNg getClusterNg() {
+        return clusterNg;
     }
 
     public long getRpsForOneVm() {
@@ -71,10 +70,7 @@ public class ClusterManager {
      * @return maximum number of request that can be fulfilled by the Cluster in one second.
      */
     public long computeMaxRps() {
-        return cluster.getTgGroup()
-                .stream()
-                .mapToLong(TCGroup::getVmNumber)
-                .sum() * rpsForOneVm;
+        return clusterNg.getVms().size() * rpsForOneVm;
     }
 
 }

@@ -1,11 +1,7 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
 public class Vm {
-    private int requestId;
-    private double taskStartTime;
-    private double taskEndTime;
-    private double taskArrivalTime;
-
+    private Task task;
     private TreatmentCategory treatmentCategory;
 
     public Vm() {
@@ -15,42 +11,24 @@ public class Vm {
         this.treatmentCategory = treatmentCategory;
     }
 
-    public Vm(int requestId, double taskStartTime, double taskEndTime, double taskArrivalTime) {
-        this.requestId = requestId;
-        this.taskStartTime = taskStartTime;
-        this.taskEndTime = taskEndTime;
-        this.taskArrivalTime = taskArrivalTime;
+    public Vm(Task task, TreatmentCategory treatmentCategory) {
+        this.task = task;
+        this.treatmentCategory = treatmentCategory;
     }
 
-    public int getRequestId() {
-        return requestId;
+    public Task getTask() {
+        return task;
     }
 
-    public void setRequestId(int requestId) {
-        this.requestId = requestId;
+    public void setTask(Task task) {
+        this.task = task;
     }
 
-    public double getTaskStartTime() {
-        return taskStartTime;
+    public TreatmentCategory getTreatmentCategory() {
+        return treatmentCategory;
     }
 
-    public void setTaskStartTime(double taskStartTime) {
-        this.taskStartTime = taskStartTime;
-    }
-
-    public double getTaskEndTime() {
-        return taskEndTime;
-    }
-
-    public void setTaskEndTime(double taskEndTime) {
-        this.taskEndTime = taskEndTime;
-    }
-
-    public double getTaskArrivalTime() {
-        return taskArrivalTime;
-    }
-
-    public void setTaskArrivalTime(double taskArrivalTime) {
-        this.taskArrivalTime = taskArrivalTime;
+    public void setTreatmentCategory(TreatmentCategory treatmentCategory) {
+        this.treatmentCategory = treatmentCategory;
     }
 }

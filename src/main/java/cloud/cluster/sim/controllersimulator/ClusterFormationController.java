@@ -1,6 +1,8 @@
 package cloud.cluster.sim.controllersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.dto.TreatmentCategory;
+import cloud.cluster.sim.clustersimulator.dto.Vm;
 import org.springframework.stereotype.Component;
 
 /**
@@ -58,22 +60,24 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
-        clusterManager.getCluster().getTgGroup().stream()
-                .findFirst()
-                .ifPresent(tgGroup -> {
-                    tgGroup.setVmNumber(tgGroup.getVmNumber() + numberOfVmToAllocate);
-                });
+//        clusterManager.getCluster().getTgGroup().stream()
+//                .findFirst()
+//                .ifPresent(tgGroup -> {
+//                    tgGroup.setVmNumber(tgGroup.getVmNumber() + numberOfVmToAllocate);
+//                });
+        clusterManager.getClusterNg().getVms().add(new Vm(new TreatmentCategory()));
     }
 
     /**
-     * After a VM is stoped, it is removed from the cluster.
+     * After a VM is stopped, it is removed from the cluster.
      */
     private void remove() {
-        clusterManager.getCluster().getTgGroup().stream()
-                .findFirst()
-                .ifPresent(tgGroup -> {
-                    tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
-                });
+//        clusterManager.getCluster().getTgGroup().stream()
+//                .findFirst()
+//                .ifPresent(tgGroup -> {
+//                    tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
+//                });
+        clusterManager.getClusterNg().getVms().remove(1);
     }
 
 }
