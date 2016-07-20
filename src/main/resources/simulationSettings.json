@@ -1,4 +1,5 @@
 {
+  "taskTimeout": 5,
   "startVmDelay": 40,
   "stopVmDelay": 15,
   "vmCreationTimeout": 60,

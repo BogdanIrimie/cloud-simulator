@@ -1,6 +1,7 @@
 package cloud.cluster.sim.utilities.dto;
 
 public class SimulationSettings {
+    private int taskTimeout = 5;
     private long startVmDelay = 40;
     private long stopVmDelay = 15;
     private int vmCreationTimeout = 60;
@@ -16,7 +17,8 @@ public class SimulationSettings {
     public SimulationSettings() {
     }
 
-    public SimulationSettings(long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowerUtilisationThreshold, int upperUtilisationThreshold, int lowerThresholdExceedSuccessionLimit, int upperThresholdExceedSuccessionLimit, long rpsForVm, String pathToTraces, String regexForTracesName) {
+    public SimulationSettings(int taskTimeout, long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowerUtilisationThreshold, int upperUtilisationThreshold, int lowerThresholdExceedSuccessionLimit, int upperThresholdExceedSuccessionLimit, long rpsForVm, String pathToTraces, String regexForTracesName) {
+        this.taskTimeout = taskTimeout;
         this.startVmDelay = startVmDelay;
         this.stopVmDelay = stopVmDelay;
         this.vmCreationTimeout = vmCreationTimeout;
@@ -28,6 +30,14 @@ public class SimulationSettings {
         this.rpsForVm = rpsForVm;
         this.pathToTraces = pathToTraces;
         this.regexForTracesName = regexForTracesName;
+    }
+
+    public int getTaskTimeout() {
+        return taskTimeout;
+    }
+
+    public void setTaskTimeout(int taskTimeout) {
+        this.taskTimeout = taskTimeout;
     }
 
     public long getStartVmDelay() {
