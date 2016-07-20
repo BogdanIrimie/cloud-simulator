@@ -2,16 +2,17 @@ package cloud.cluster.sim.clustersimulator.dto;
 
 public class Vm {
     private int requestId;
-    private double startTime;
-    private double endTime;
+    private double taskStartTime;
+    private double taskEndTime;
+    private double taskArrivalTime;
 
     public Vm() {
     }
 
-    public Vm(int requestId, double startTime, double endTime) {
+    public Vm(int requestId, double taskStartTime, double taskEndTime) {
         this.requestId = requestId;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.taskStartTime = taskStartTime;
+        this.taskEndTime = taskEndTime;
     }
 
     public int getRequestId() {
@@ -22,20 +23,27 @@ public class Vm {
         this.requestId = requestId;
     }
 
-    public double getStartTime() {
-        return startTime;
+    public double getTaskStartTime() {
+        return taskStartTime;
     }
 
-    public void setStartTime(double startTime) {
-        this.startTime = startTime;
+    public void setTaskStartTime(double taskStartTime) {
+        this.taskStartTime = taskStartTime;
     }
 
-    public double getEndTime() {
-        return endTime;
+    public double getTaskEndTime() {
+        return taskEndTime;
     }
 
-    public void setEndTime(double endTime) {
-        this.endTime = endTime;
+    public void setTaskEndTime(double taskEndTime) {
+        this.taskEndTime = taskEndTime;
     }
 
+    public double getTaskArrivalTime() {
+        return taskArrivalTime;
+    }
+
+    public void setTaskArrivalTime(double taskArrivalTime) {
+        this.taskArrivalTime = taskArrivalTime;
+    }
 }
