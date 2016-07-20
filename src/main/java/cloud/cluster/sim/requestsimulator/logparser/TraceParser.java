@@ -1,6 +1,8 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
+import cloud.cluster.sim.clustersimulator.dto.ClusterNg;
 import cloud.cluster.sim.clustersimulator.dto.TCGroup;
+import cloud.cluster.sim.clustersimulator.dto.Vm;
 import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import cloud.cluster.sim.clustersimulator.ClusterManager;
@@ -63,7 +65,7 @@ public class TraceParser {
         long startTime = System.nanoTime();
 
         // Instantiate ClusterManager
-        timePerRequest = 1.0 / clusterManager.computeMaxRps();
+        timePerRequest = 1.0 / 3000;//1.0 / clusterManager.computeMaxRps();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
         String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
@@ -104,7 +106,58 @@ public class TraceParser {
         long requestId = Long.parseLong(splitTraceLine[0]);
         double requestTime = Double.parseDouble(splitTraceLine[1]);
         RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
-        simulateTimePassing(requestDetails);
+//        simulateTimePassing(requestDetails);
+        broker(requestDetails);
+    }
+
+    private List<Vm> vms = new ArrayList<Vm>(){{
+        add(new Vm());
+        add(new Vm());
+        add(new Vm());
+    }};
+
+    private int vmIndex = 0;
+
+    private void broker(RequestDetails requestDetails) {
+        if (vmIndex >= vms.size()) {
+            vmIndex = 0;
+        }
+
+        double requestTime = requestDetails.getRequestArrivalTime();
+        if (time < 0) {
+            time = requestTime;
+        }
+
+        if (requestTime >= time) {
+            time = requestTime;
+        }
+
+        if (requestTime + 5 >= time) {
+
+            Vm vm = vms.get(vmIndex++);
+            if (time  < vm.getTaskEndTime()) {
+                time = vm.getTaskEndTime();
+            }
+
+            vm.setTaskArrivalTime(requestTime);
+            vm.setTaskStartTime(time);
+            vm.setTaskEndTime(time + timePerRequest);
+
+            responseTime = computeResponseTime(vm);
+            totalDelay += responseTime;
+
+            fulfilledRequestCounter++;
+        }
+        else {
+            timeOutedRequestCounter++;
+            responseTime = -1;
+        }
+
+        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
+    }
+
+    private double computeResponseTime(Vm vm) {
+        return vm.getTaskEndTime() - vm.getTaskArrivalTime();
     }
 
     /**
