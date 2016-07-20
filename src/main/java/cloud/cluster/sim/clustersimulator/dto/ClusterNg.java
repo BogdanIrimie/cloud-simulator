@@ -8,6 +8,9 @@ public class ClusterNg {
 
     private List<Vm> vms;
 
+    public ClusterNg() {
+    }
+
     public ClusterNg(List<Vm> vms) {
         this.vms = vms;
     }

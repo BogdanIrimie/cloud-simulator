@@ -6,13 +6,20 @@ public class Vm {
     private double taskEndTime;
     private double taskArrivalTime;
 
+    private TreatmentCategory treatmentCategory;
+
     public Vm() {
     }
 
-    public Vm(int requestId, double taskStartTime, double taskEndTime) {
+    public Vm(TreatmentCategory treatmentCategory) {
+        this.treatmentCategory = treatmentCategory;
+    }
+
+    public Vm(int requestId, double taskStartTime, double taskEndTime, double taskArrivalTime) {
         this.requestId = requestId;
         this.taskStartTime = taskStartTime;
         this.taskEndTime = taskEndTime;
+        this.taskArrivalTime = taskArrivalTime;
     }
 
     public int getRequestId() {

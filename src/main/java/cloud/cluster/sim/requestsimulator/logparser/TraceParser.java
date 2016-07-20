@@ -51,6 +51,7 @@ public class TraceParser {
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
     private long lastKnownRequestNumber;
+    private int taskTimeout = 5;
     private List<RequestDetails> requestList = new ArrayList<>();
 
     /**
@@ -132,7 +133,7 @@ public class TraceParser {
             time = requestTime;
         }
 
-        if (requestTime + 5 >= time) {
+        if (requestTime + taskTimeout >= time) {
 
             Vm vm = vms.get(vmIndex++);
             if (time  < vm.getTaskEndTime()) {
@@ -176,7 +177,7 @@ public class TraceParser {
             time = requestTime;
         }
 
-        if (requestTime + 5 >= time) {
+        if (requestTime + taskTimeout >= time) {
             time += timePerRequest;
             fulfilledRequestCounter++;
 
