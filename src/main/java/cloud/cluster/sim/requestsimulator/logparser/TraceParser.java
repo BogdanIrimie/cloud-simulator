@@ -105,19 +105,14 @@ public class TraceParser {
         long requestId = Long.parseLong(splitTraceLine[0]);
         double requestTime = Double.parseDouble(splitTraceLine[1]);
         RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
-//        simulateTimePassing(requestDetails);
         broker(requestDetails);
     }
-
-    private List<Vm> vms = new ArrayList<Vm>(){{
-        add(new Vm(new Task(), new TreatmentCategory()));
-        add(new Vm(new Task(), new TreatmentCategory()));
-        add(new Vm(new Task(), new TreatmentCategory()));
-    }};
 
     private int vmIndex = 0;
 
     private void broker(RequestDetails requestDetails) {
+        List<Vm> vms = clusterManager.getCluster().getVms();
+
         if (vmIndex >= vms.size()) {
             vmIndex = 0;
         }

@@ -7,11 +7,9 @@ public class Vm {
     private Task task;
     private TreatmentCategory treatmentCategory;
 
-    public Vm() {
-    }
-
     public Vm(TreatmentCategory treatmentCategory) {
         this.treatmentCategory = treatmentCategory;
+        this.task = new Task();
     }
 
     public Vm(Task task, TreatmentCategory treatmentCategory) {

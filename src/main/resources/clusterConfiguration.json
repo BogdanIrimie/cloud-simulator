@@ -15,7 +15,7 @@
     {
       "name": "TC3",
       "sla": 50.00,
-      "vmNumber": 3,
+      "vmNumber": 1,
       "cost": 1
     }
   ]
