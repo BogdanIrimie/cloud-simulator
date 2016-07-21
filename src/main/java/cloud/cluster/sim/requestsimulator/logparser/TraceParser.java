@@ -133,16 +133,16 @@ public class TraceParser {
 
         if (requestTime + taskTimeout >= time) {
 
-            Vm vm = vms.get(vmIndex++);
-            if (time  < vm.getTask().getTaskEndTime()) {
-                time = vm.getTask().getTaskEndTime();
+            Task task = vms.get(vmIndex++).getTask();
+            if (time  < task.getTaskEndTime()) {
+                time = task.getTaskEndTime();
             }
 
-            vm.getTask().setTaskArrivalTime(requestTime);
-            vm.getTask().setTaskStartTime(time);
-            vm.getTask().setTaskEndTime(time + timePerRequest);
+            task.setTaskArrivalTime(requestTime);
+            task.setTaskStartTime(time);
+            task.setTaskEndTime(time + timePerRequest);
 
-            responseTime = computeResponseTime(vm);
+            responseTime = task.getTaskEndTime() - task.getTaskArrivalTime();
             totalDelay += responseTime;
 
             fulfilledRequestCounter++;
@@ -153,10 +153,6 @@ public class TraceParser {
         }
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
-    }
-
-    private double computeResponseTime(Vm vm) {
-        return vm.getTask().getTaskEndTime() - vm.getTask().getTaskArrivalTime();
     }
 
     /**
