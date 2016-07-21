@@ -40,7 +40,15 @@ public class ClusterManager {
             logger.error(e.getMessage(), e);
         }
 
-        // ClusterExtRep to Cluster
+        clusterExtRepToCluster(clusterExtRep);
+    }
+
+    /**
+     * Convert external representaiton of cluster into internal representation.
+     *
+     * @param clusterExtRep representation of cluster in the clusterConfiguration file.
+     */
+    private void clusterExtRepToCluster(ClusterExtRep clusterExtRep) {
         List<Vm> vmList = new ArrayList<Vm>();
         clusterExtRep.getTgGroup().stream().forEach(tcGroup -> {
             TreatmentCategory tc =  new TreatmentCategory(tcGroup.getName(), tcGroup.getSla(), tcGroup.getCost());
@@ -48,7 +56,7 @@ public class ClusterManager {
                 vmList.add(new Vm(tc));
             }
         });
-        cluster = new Cluster(vmList);
+        cluster =  new Cluster(vmList);
     }
 
     /**
