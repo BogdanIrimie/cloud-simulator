@@ -108,15 +108,7 @@ public class TraceParser {
         broker(requestDetails);
     }
 
-    private int vmIndex = 0;
-
     private void broker(RequestDetails requestDetails) {
-        List<Vm> vms = clusterManager.getCluster().getVms();
-
-        if (vmIndex >= vms.size()) {
-            vmIndex = 0;
-        }
-
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
@@ -128,7 +120,7 @@ public class TraceParser {
 
         if (requestTime + taskTimeout >= time) {
 
-            Task task = vms.get(vmIndex++).getTask();
+            Task task = clusterManager.nextVm().getTask();
             if (time  < task.getTaskEndTime()) {
                 time = task.getTaskEndTime();
             }

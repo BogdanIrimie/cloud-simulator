@@ -21,6 +21,7 @@ public class ClusterManager {
     private long rpsForOneVm;
     private ClusterExtRep clusterExtRep;
     private Cluster cluster;
+    private int currentResourceIndex = 0;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
     /**
@@ -81,4 +82,46 @@ public class ClusterManager {
         return cluster.getVms().size() * rpsForOneVm;
     }
 
+
+    /**
+     * Get the number of VMs in the cluster.
+     *
+     * @return Vm number in the cluster.
+     */
+    public int getClusterSize() {
+        return cluster.getVms().size();
+    }
+
+    /**
+     * Allows iteration through cluster elements in a circular list fashion while allowing removal of cluster VMs.
+     *
+     * @return
+     */
+    public Vm nextVm() {
+        if (currentResourceIndex >= getClusterSize()) {
+            currentResourceIndex = 0;
+        }
+        return cluster.getVms().get(currentResourceIndex++);
+    }
+
+    /**
+     * Remove VMs from cluster.
+     *
+     * @param id of the VM that should be removed.
+     */
+    public void removeVm(int id) {
+        if (id < currentResourceIndex) {
+            currentResourceIndex--;
+        }
+        cluster.getVms().remove(id);
+    }
+
+    /**
+     * Add Vms to the cluster, always before the index , in order to allocate tasks to these Vms first.
+     *
+     * @param vm new VM that needs to be added to the cluster.
+     */
+    public void addVm(Vm vm) {
+        cluster.getVms().add(currentResourceIndex + 1, vm);
+    }
 }
