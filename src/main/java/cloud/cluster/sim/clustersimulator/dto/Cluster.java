@@ -1,7 +1,5 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 public class Cluster {

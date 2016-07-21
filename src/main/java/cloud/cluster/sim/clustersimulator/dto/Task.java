@@ -1,5 +1,8 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
+/**
+ * A Task represents a unit of work that is submitted to a VM.
+ */
 public class Task {
     private int requestId;
     private double taskStartTime;

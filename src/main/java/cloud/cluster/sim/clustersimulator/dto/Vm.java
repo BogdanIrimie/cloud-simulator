@@ -1,5 +1,8 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
+/**
+ * A VM is an execution engine, able to execute tasks.
+ */
 public class Vm {
     private Task task;
     private TreatmentCategory treatmentCategory;

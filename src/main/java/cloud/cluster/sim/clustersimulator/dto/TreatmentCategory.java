@@ -1,5 +1,9 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
+/**
+ * A {@link cloud.cluster.sim.clustersimulator.dto.TreatmentCategory}
+ * represents the quality requirements for a group of resources, sharing the same SLA.
+ */
 public class TreatmentCategory {
     private String name;
     private double sla;
