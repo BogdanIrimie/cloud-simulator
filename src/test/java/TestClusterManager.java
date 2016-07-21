@@ -1,5 +1,5 @@
 import cloud.cluster.sim.clustersimulator.ClusterManager;
-import cloud.cluster.sim.clustersimulator.dto.ClusterNg;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import org.junit.Test;
 
 public class TestClusterManager {
@@ -7,7 +7,7 @@ public class TestClusterManager {
     @Test
     public void createClusterManager() {
         ClusterManager clusterManager = new ClusterManager();
-        ClusterNg clusterNg = clusterManager.getClusterNg();
+        Cluster cluster = clusterManager.getCluster();
     }
 
     @Test

@@ -20,7 +20,7 @@ public class ClusterManager {
 
     private long rpsForOneVm;
     private ClusterExtRep clusterExtRep;
-    private ClusterNg clusterNg;
+    private Cluster cluster;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
     /**
@@ -40,7 +40,7 @@ public class ClusterManager {
             logger.error(e.getMessage(), e);
         }
 
-        // ClusterExtRep to ClusterNg
+        // ClusterExtRep to Cluster
         List<Vm> vmList = new ArrayList<Vm>();
         clusterExtRep.getTgGroup().stream().forEach(tcGroup -> {
             TreatmentCategory tc =  new TreatmentCategory(tcGroup.getName(), tcGroup.getSla(), tcGroup.getCost());
@@ -48,16 +48,16 @@ public class ClusterManager {
                 vmList.add(new Vm(tc));
             }
         });
-        clusterNg = new ClusterNg(vmList);
+        cluster = new Cluster(vmList);
     }
 
     /**
-     * Return the ClusterNg used by the ClusterManager.
+     * Return the Cluster used by the ClusterManager.
      *
-     * @return ClusterNg used by the ClusterManager.
+     * @return Cluster used by the ClusterManager.
      */
-    public ClusterNg getClusterNg() {
-        return clusterNg;
+    public Cluster getCluster() {
+        return cluster;
     }
 
     public long getRpsForOneVm() {
@@ -70,7 +70,7 @@ public class ClusterManager {
      * @return maximum number of request that can be fulfilled by the Cluster in one second.
      */
     public long computeMaxRps() {
-        return clusterNg.getVms().size() * rpsForOneVm;
+        return cluster.getVms().size() * rpsForOneVm;
     }
 
 }

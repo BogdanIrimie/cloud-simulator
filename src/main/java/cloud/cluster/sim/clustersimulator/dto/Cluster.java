@@ -4,14 +4,14 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class ClusterNg {
+public class Cluster {
 
     private List<Vm> vms;
 
-    public ClusterNg() {
+    public Cluster() {
     }
 
-    public ClusterNg(List<Vm> vms) {
+    public Cluster(List<Vm> vms) {
         this.vms = vms;
     }
 

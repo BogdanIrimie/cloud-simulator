@@ -89,7 +89,7 @@ public class TraceParser {
         logger.info("Time spend executing:           " + executionTime + " seconds");
         // requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
 
-        long vmNumberAtEnd = clusterManager.getClusterNg().getVms().size();
+        long vmNumberAtEnd = clusterManager.getCluster().getVms().size();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter,

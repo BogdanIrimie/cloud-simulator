@@ -65,7 +65,7 @@ public class ClusterFormationController {
 //                .ifPresent(tgGroup -> {
 //                    tgGroup.setVmNumber(tgGroup.getVmNumber() + numberOfVmToAllocate);
 //                });
-        clusterManager.getClusterNg().getVms().add(new Vm(new TreatmentCategory()));
+        clusterManager.getCluster().getVms().add(new Vm(new TreatmentCategory()));
     }
 
     /**
@@ -77,7 +77,7 @@ public class ClusterFormationController {
 //                .ifPresent(tgGroup -> {
 //                    tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
 //                });
-        clusterManager.getClusterNg().getVms().remove(1);
+        clusterManager.getCluster().getVms().remove(1);
     }
 
 }

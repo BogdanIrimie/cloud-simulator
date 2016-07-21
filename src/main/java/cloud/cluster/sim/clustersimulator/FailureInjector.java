@@ -1,6 +1,6 @@
 package cloud.cluster.sim.clustersimulator;
 
-import cloud.cluster.sim.clustersimulator.dto.ClusterExtRep;
+import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -20,21 +20,24 @@ public class FailureInjector {
      * @param cluster ClusterManager for which failures will be simulated.
      * @return ClusterManager after failure simulation.
      */
+
+    // TODO needs to be refactor in order to use new cluster.
     public Cluster injectFailure(Cluster cluster) {
 
-        cluster.getTgGroup().forEach(tcg -> {
-            // Test each machine in the treatment category.
-            for (int i = 0; i < tcg.getVmNumber(); i++) {
-                if (testVmFarFailure(tcg.getSla())) {
-                    tcg.setVmNumber(tcg.getVmNumber() - 1);
-                }
-            }
-        });
-
-        // Remove a treatment category if there are no VMs in it.
-        clusterExtRep.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
-
-        return clusterExtRep;
+//        cluster.getTgGroup().forEach(tcg -> {
+//            // Test each machine in the treatment category.
+//            for (int i = 0; i < tcg.getVmNumber(); i++) {
+//                if (testVmFarFailure(tcg.getSla())) {
+//                    tcg.setVmNumber(tcg.getVmNumber() - 1);
+//                }
+//            }
+//        });
+//
+//        // Remove a treatment category if there are no VMs in it.
+//        clusterExtRep.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
+//
+//        return clusterExtRep;
+        return null;
     }
 
     /**
