@@ -1,5 +1,5 @@
 import cloud.cluster.sim.clustersimulator.FailureInjector;
-import cloud.cluster.sim.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.ClusterExtRep;
 import cloud.cluster.sim.clustersimulator.dto.TCGroup;
 import org.junit.Test;
 
@@ -13,8 +13,8 @@ public class TestSimulatedFailure {
         FailureInjector failureInjector = new FailureInjector();
         double sla = 80.00;
         long vmCount = 1;
-        Cluster cluster =
-                new Cluster(
+        ClusterExtRep clusterExtRep =
+                new ClusterExtRep(
                         new LinkedList<TCGroup>(Arrays.asList(
                                 new TCGroup("TC3", sla, vmCount))
                         )
@@ -22,8 +22,8 @@ public class TestSimulatedFailure {
 
 
         long secondsToFailure = 0;
-        while (cluster.getTgGroup().size() > 0) {
-            failureInjector.injectFailure(cluster);
+        while (clusterExtRep.getTgGroup().size() > 0) {
+            failureInjector.injectFailure(clusterExtRep);
             secondsToFailure++;
         }
 

@@ -5,13 +5,13 @@ import java.util.List;
 /**
  * ClusterManager contains a list a treatment category groups.
  */
-public class Cluster {
+public class ClusterExtRep {
     private List<TCGroup> tgGroup;
 
-    public Cluster() {
+    public ClusterExtRep() {
     }
 
-    public Cluster(List<TCGroup> tgGroup) {
+    public ClusterExtRep(List<TCGroup> tgGroup) {
         this.tgGroup = tgGroup;
     }
 

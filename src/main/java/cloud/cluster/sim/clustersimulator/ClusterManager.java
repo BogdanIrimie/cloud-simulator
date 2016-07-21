@@ -19,12 +19,12 @@ import java.util.List;
 public class ClusterManager {
 
     private long rpsForOneVm;
-    private Cluster cluster;
+    private ClusterExtRep clusterExtRep;
     private ClusterNg clusterNg;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
 
     /**
-     * Read Cluster configuration date from Json file.
+     * Read ClusterExtRep configuration date from Json file.
      */
     public ClusterManager() {
         this.rpsForOneVm = SimSettingsExtractor.getSimulationSettings().getRpsForVm();
@@ -35,14 +35,14 @@ public class ClusterManager {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            cluster = mapper.readValue(new File(path), Cluster.class);
+            clusterExtRep = mapper.readValue(new File(path), ClusterExtRep.class);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
 
-        // Cluster to ClusterNg
+        // ClusterExtRep to ClusterNg
         List<Vm> vmList = new ArrayList<Vm>();
-        cluster.getTgGroup().stream().forEach(tcGroup -> {
+        clusterExtRep.getTgGroup().stream().forEach(tcGroup -> {
             TreatmentCategory tc =  new TreatmentCategory(tcGroup.getName(), tcGroup.getSla(), tcGroup.getCost());
             for (int i = 0; i < tcGroup.getVmNumber(); i++) {
                 vmList.add(new Vm(tc));

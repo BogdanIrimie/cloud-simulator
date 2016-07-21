@@ -1,6 +1,6 @@
 package cloud.cluster.sim.clustersimulator;
 
-import cloud.cluster.sim.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.ClusterExtRep;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -32,9 +32,9 @@ public class FailureInjector {
         });
 
         // Remove a treatment category if there are no VMs in it.
-        cluster.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
+        clusterExtRep.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
 
-        return cluster;
+        return clusterExtRep;
     }
 
     /**
