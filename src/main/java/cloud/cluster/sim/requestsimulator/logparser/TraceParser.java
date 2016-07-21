@@ -140,6 +140,14 @@ public class TraceParser {
         }
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
+        // Notify other components of time passing, in 1 second increments.
+        if (requestTime >= notificationTime) {
+            requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
+            lastKnownRequestNumber = totalRequestCounter;
+
+            // compute cost
+            costComputer.addCostForLastSecond(clusterManager);
+        }
     }
 
     /**
