@@ -122,6 +122,11 @@ public class ClusterManager {
      * @param vm new VM that needs to be added to the cluster.
      */
     public void addVm(Vm vm) {
-        cluster.getVms().add(currentResourceIndex + 1, vm);
+        if (currentResourceIndex >= cluster.getVms().size()) {
+            cluster.getVms().add(vm);
+        }
+        else {
+            cluster.getVms().add(currentResourceIndex + 1, vm);
+        }
     }
 }

@@ -60,24 +60,14 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
-//        clusterManager.getCluster().getTgGroup().stream()
-//                .findFirst()
-//                .ifPresent(tgGroup -> {
-//                    tgGroup.setVmNumber(tgGroup.getVmNumber() + numberOfVmToAllocate);
-//                });
-        clusterManager.getCluster().getVms().add(new Vm(new TreatmentCategory()));
+        clusterManager.addVm(new Vm(new TreatmentCategory()));
     }
 
     /**
      * After a VM is stopped, it is removed from the cluster.
      */
     private void remove() {
-//        clusterManager.getCluster().getTgGroup().stream()
-//                .findFirst()
-//                .ifPresent(tgGroup -> {
-//                    tgGroup.setVmNumber(tgGroup.getVmNumber() - numberOfVmToRemove);
-//                });
-        clusterManager.getCluster().getVms().remove(1);
+        clusterManager.removeVm(0);
     }
 
 }
