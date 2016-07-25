@@ -50,7 +50,6 @@ public class TraceParser {
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
     private long lastKnownRequestNumber;
     private int taskTimeout = 5;
-    private List<RequestDetails> requestList = new ArrayList<>();
 
     /**
      * Parse traces from log files and feeds them to the simulation.
@@ -166,69 +165,4 @@ public class TraceParser {
         }
     }
 
-    /**
-     * Simulate time passing in order to compute response time for requests in trace.
-     *
-     * @param requestDetails contains all the details necessary to compute response time for a trace.
-     */
-//    private void simulateTimePassing(RequestDetails requestDetails) {
-//        double requestTime = requestDetails.getRequestArrivalTime();
-//        if (time < 0) {
-//            time = requestTime;
-//            notificationTime = time + 1;
-//        }
-//
-//        if (requestTime >= time) {
-//            time = requestTime;
-//        }
-//
-//        if (requestTime + taskTimeout >= time) {
-//            time += timePerRequest;
-//            fulfilledRequestCounter++;
-//
-//            responseTime = time - requestTime;
-//            totalDelay += responseTime;
-//        }
-//        else {
-//            timeOutedRequestCounter++;
-//            responseTime = -1;
-//        }
-//
-//        requestDetails.setResponseTime(responseTime);
-//        requestList.add(requestDetails);
-//
-//        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
-//        if (totalRequestCounter % 500000 == 1) {                                                                        // Insert request in bulks for better performance
-//            // requestDetailsOperations.insert(requestList);
-//            requestList = new ArrayList<>();
-//        }
-//
-//        // Notify other components of time passing, in 1 second increments.
-//        if (requestTime >= notificationTime) {
-//            requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
-//            lastKnownRequestNumber = totalRequestCounter;
-//
-//            // compute cost
-//            costComputer.addCostForLastSecond(clusterManager);
-//
-//            // each second notify the auto scaling
-//            scale.scalePolicy(clusterManager, requestInTheLastSecond);
-//
-//            //simulate failure
-//            // failureInjector.injectFailure(clusterManager.getCluster());
-//
-//            // Recompute time per request because the cluster configuration might have changed.
-//            timePerRequest = 1.0 / clusterManager.computeMaxRps();
-//
-//            // Set next notification time with 1 second increment.
-//            notificationTime = requestTime + 1;
-//            // TODO
-//            /*
-//            Time can be incremented with more then one second in current implementation.
-//            Maybe add a small mechanism so simulate time passing in increments of 1 second
-//            to send notifications to other components even when no requests are received.
-//            */
-//        }
-//
-//    }
 }
