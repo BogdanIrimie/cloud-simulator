@@ -64,7 +64,7 @@ public class TraceParser {
         long startTime = System.nanoTime();
 
         // Instantiate ClusterManager
-        timePerRequest = 1.0 / 1000;//1.0 / clusterManager.computeMaxRps();
+        timePerRequest =  1.0 / clusterManager.computeMaxRps(); //1.0 / 1000;//1.0 / clusterManager.computeMaxRps();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
         String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
@@ -147,6 +147,22 @@ public class TraceParser {
 
             // compute cost
             costComputer.addCostForLastSecond(clusterManager);
+
+            // each second notify the auto scaling
+            scale.scalePolicy(clusterManager, requestInTheLastSecond);
+
+            //simulate failure
+            failureInjector.injectFailure(clusterManager.getCluster());
+
+
+            // Set next notification time with 1 second increment.
+            notificationTime = requestTime + 1;
+            // TODO
+            /*
+            Time can be incremented with more then one second in current implementation.
+            Maybe add a small mechanism so simulate time passing in increments of 1 second
+            to send notifications to other components even when no requests are received.
+            */
         }
     }
 

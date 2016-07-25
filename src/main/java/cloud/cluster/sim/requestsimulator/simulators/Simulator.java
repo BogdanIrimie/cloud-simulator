@@ -27,7 +27,7 @@ public class Simulator {
                 / simulationStatistics.getFulfilledRequestCounter();
 
         simulationStatisticsOperations.insert(simulationStatistics);
-        logger.info("Average response time was:      {}", avgResponseTime);
+        logger.info("Average response time was:      " + String.format("%.10f", avgResponseTime));
         logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
         logger.info("Total cost:                     " + simulationStatistics.getTotalCost());
     }
