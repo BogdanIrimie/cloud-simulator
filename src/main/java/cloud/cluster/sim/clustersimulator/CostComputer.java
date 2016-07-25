@@ -1,4 +1,4 @@
-package cloud.cluster.sim.utilities;
+package cloud.cluster.sim.clustersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
 import org.springframework.stereotype.Component;

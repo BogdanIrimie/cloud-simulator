@@ -65,7 +65,7 @@ public class ClusterManager {
      *
      * @return Cluster used by the ClusterManager.
      */
-    public Cluster getCluster() {
+    Cluster getCluster() {
         return cluster;
     }
 

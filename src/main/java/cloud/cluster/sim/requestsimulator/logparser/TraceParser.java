@@ -8,7 +8,7 @@ import cloud.cluster.sim.clustersimulator.FailureInjector;
 import cloud.cluster.sim.controllersimulator.AutoClusterScale;
 import cloud.cluster.sim.requestsimulator.dao.RequestDetailsOperations;
 import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
-import cloud.cluster.sim.utilities.CostComputer;
+import cloud.cluster.sim.clustersimulator.CostComputer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Read all traces from multiple files. Simulate passing of time and compute response time for request.
@@ -88,7 +86,7 @@ public class TraceParser {
         logger.info("Time spend executing:           " + executionTime + " seconds");
         // requestDetailsOperations.insert(requestList);                                                                    // insert last records in database
 
-        long vmNumberAtEnd = clusterManager.getCluster().getVms().size();
+        long vmNumberAtEnd = clusterManager.getClusterSize();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter,
@@ -151,7 +149,7 @@ public class TraceParser {
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
             //simulate failure
-            failureInjector.injectFailure(clusterManager.getCluster());
+//            failureInjector.injectFailure(clusterManager.getCluster());
 
 
             // Set next notification time with 1 second increment.

@@ -7,7 +7,7 @@ public class TestClusterManager {
     @Test
     public void createClusterManager() {
         ClusterManager clusterManager = new ClusterManager();
-        Cluster cluster = clusterManager.getCluster();
+        int clusterSize = clusterManager.getClusterSize();
     }
 
     @Test
