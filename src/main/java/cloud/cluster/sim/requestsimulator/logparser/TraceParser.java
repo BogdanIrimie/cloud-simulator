@@ -9,9 +9,11 @@ import cloud.cluster.sim.controllersimulator.AutoClusterScale;
 import cloud.cluster.sim.requestsimulator.dao.RequestDetailsOperations;
 import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
 import cloud.cluster.sim.clustersimulator.CostComputer;
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.parsing.SourceExtractor;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -115,15 +117,7 @@ public class TraceParser {
             time = requestTime;
         }
 
-        if (requestTime + taskTimeout >= time) {
-
-            // fast passing of time until we have at least one Vm in the cluster.
-            while (clusterManager.getClusterSize() <= 0) {
-                time = notificationTime;
-                Time.timeMillis = time;
-                notifyOtherComponentsIfRightTime(time);
-            }
-
+        if (requestTime + taskTimeout >= time && clusterManager.getClusterSize() > 0) {
 
             Task task = clusterManager.nextVm().getTask();
             if (time  < task.getTaskEndTime()) {
