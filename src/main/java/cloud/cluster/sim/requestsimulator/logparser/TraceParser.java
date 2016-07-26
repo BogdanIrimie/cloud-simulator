@@ -89,8 +89,8 @@ public class TraceParser {
         long vmNumberAtEnd = clusterManager.getClusterSize();
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
-                totalDelay, totalRequestCounter, fulfilledRequestCounter,
-                timeOutedRequestCounter, costComputer.getTotalCost(), executionTime);
+                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter,
+                costComputer.getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
     }
 
     /**
@@ -120,6 +120,7 @@ public class TraceParser {
             // fast passing of time until we have at least one Vm in the cluster.
             while (clusterManager.getClusterSize() <= 0) {
                 time = notificationTime;
+                Time.timeMillis = time;
                 notifyOtherComponentsIfRightTime(time);
             }
 
@@ -128,6 +129,7 @@ public class TraceParser {
             if (time  < task.getTaskEndTime()) {
                 time = task.getTaskEndTime();
             }
+            Time.timeMillis = time;
 
             task.setTaskArrivalTime(requestTime);
             task.setTaskStartTime(time);

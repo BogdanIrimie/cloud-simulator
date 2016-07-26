@@ -1,9 +1,12 @@
 package cloud.cluster.sim.requestsimulator.dto;
 
+import cloud.cluster.sim.clustersimulator.dto.AllocationState;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Output of a simulation.
@@ -21,6 +24,7 @@ public class SimulationStatistics {
     private long timeOutedRequestCounter;
     private long totalCost;
     private SimulationSettings simulationSettings;
+    private List<AllocationState> allocationEvolution;
 
     public SimulationStatistics() {
     }
@@ -35,6 +39,19 @@ public class SimulationStatistics {
         this.avgDelay = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
         this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
+    }
+
+    public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter,
+                                long timeOutedRequestCounter, long totalCost, long executionTime, List<AllocationState> allocationEvolution) {
+        this.totalDelay = totalDelay;
+        this.totalRequestCounter = totalRequestCounter;
+        this.fulfilledRequestCounter = fulfilledRequestCounter;
+        this.timeOutedRequestCounter = timeOutedRequestCounter;
+        this.totalCost = totalCost;
+        this.avgDelay = totalDelay / fulfilledRequestCounter;
+        this.executionTime = executionTime;
+        this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
+        this.allocationEvolution = allocationEvolution;
     }
 
     public String getId() {
@@ -99,5 +116,21 @@ public class SimulationStatistics {
 
     public void setTotalCost(long totalCost) {
         this.totalCost = totalCost;
+    }
+
+    public SimulationSettings getSimulationSettings() {
+        return simulationSettings;
+    }
+
+    public void setSimulationSettings(SimulationSettings simulationSettings) {
+        this.simulationSettings = simulationSettings;
+    }
+
+    public List<AllocationState> getAllocationEvolution() {
+        return allocationEvolution;
+    }
+
+    public void setAllocationEvolution(List<AllocationState> allocationEvolution) {
+        this.allocationEvolution = allocationEvolution;
     }
 }

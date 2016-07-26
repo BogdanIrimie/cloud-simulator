@@ -5,6 +5,7 @@ import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -19,11 +20,17 @@ import java.util.List;
 @Component
 public class ClusterManager {
 
+    private enum Compression {
+        ADD,
+        SUBTRACT
+    }
+
     private long rpsForOneVm;
     private ClusterExtRep clusterExtRep;
     private Cluster cluster;
     private int currentResourceIndex = 0;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
+    private List<AllocationState> allocationEvolution = new ArrayList<AllocationState>();
 
     /**
      * Read ClusterExtRep configuration date from Json file.
@@ -120,6 +127,8 @@ public class ClusterManager {
             currentResourceIndex--;
         }
         cluster.getVms().remove(id);
+
+        compressAllocationEvolution(Compression.SUBTRACT);
     }
 
     /**
@@ -134,6 +143,29 @@ public class ClusterManager {
         else {
             cluster.getVms().add(currentResourceIndex + 1, vm);
         }
+
+        compressAllocationEvolution(Compression.ADD);
+    }
+
+    private void compressAllocationEvolution(Compression compression) {
+        if (allocationEvolution.size() > 0) {
+            AllocationState latAllocationState = allocationEvolution.get(allocationEvolution.size() - 1);
+
+            if(Math.abs(latAllocationState.getTime() - Time.timeMillis) < 0.00000001) {
+                latAllocationState.setVmNumber(
+                        (compression == Compression.ADD) ?
+                                latAllocationState.getVmNumber() + 1 :
+                                latAllocationState.getVmNumber() - 1);
+                return;
+            }
+        }
+
+        allocationEvolution.add(new AllocationState(Time.timeMillis,
+                (compression == Compression.ADD) ? +1: -1));
+    }
+
+    public List<AllocationState> getAllocationEvolution() {
+        return allocationEvolution;
     }
 
 }
