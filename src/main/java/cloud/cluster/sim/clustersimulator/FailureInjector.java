@@ -51,7 +51,7 @@ public class FailureInjector {
         int randomInt = random.nextInt(seconds);
         long numberOfRestart = secondsOffline / 60;
 
-        if (randomInt <= (secondsOffline / 60)) {
+        if (randomInt <= secondsOffline) {
             return true;
         }
         return false;
