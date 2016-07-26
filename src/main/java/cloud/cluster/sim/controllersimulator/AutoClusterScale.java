@@ -44,7 +44,7 @@ public class AutoClusterScale {
      */
     public void scalePolicy(ClusterManager clusterManager, long requestInLastSecond) {
         long rpsForOneVm  = clusterManager.getRpsForOneVm();
-        long maxRps =  clusterManager.computeMaxRps();
+        long maxRps =  clusterManager.computeCumulativeRpsForCluster();
 
         long upperThreshold = upperUtilisationFactor * maxRps / 100;
         long lowerThreshold = lowerUtilisationFactor * maxRps / 100;

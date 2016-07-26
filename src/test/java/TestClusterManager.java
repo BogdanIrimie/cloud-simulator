@@ -1,5 +1,4 @@
 import cloud.cluster.sim.clustersimulator.ClusterManager;
-import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import org.junit.Test;
 
 public class TestClusterManager {
@@ -13,7 +12,7 @@ public class TestClusterManager {
     @Test
     public void readMaxRps() {
         ClusterManager clusterManager = new ClusterManager();
-        long maxRps = clusterManager.computeMaxRps();
+        long maxRps = clusterManager.computeCumulativeRpsForCluster();
         System.out.println("Max rps: " + maxRps);
     }
 

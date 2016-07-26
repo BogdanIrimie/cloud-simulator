@@ -1,8 +1,11 @@
 package cloud.cluster.sim.clustersimulator;
 
 import cloud.cluster.sim.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.Vm;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -17,33 +20,24 @@ public class FailureInjector {
     /**
      * Simulate failures for all the machines in the cluster.
      *
-     * @param cluster ClusterManager for which failures will be simulated.
+     * @param clusterManager ClusterManager for which failures will be simulated.
      * @return ClusterManager after failure simulation.
      */
 
     // TODO needs to be refactor in order to use new cluster.
-    public Cluster injectFailure(Cluster cluster) {
-
-//        cluster.getTgGroup().forEach(tcg -> {
-//            // Test each machine in the treatment category.
-//            for (int i = 0; i < tcg.getVmNumber(); i++) {
-//                if (testVmFarFailure(tcg.getSla())) {
-//                    tcg.setVmNumber(tcg.getVmNumber() - 1);
-//                }
-//            }
-//        });
-//
-//        // Remove a treatment category if there are no VMs in it.
-//        clusterExtRep.getTgGroup().removeIf(tcg -> tcg.getVmNumber() == 0);
-//
-//        return clusterExtRep;
-        return null;
+    public void injectFailure(ClusterManager clusterManager) {
+        for (int i = 0; i < clusterManager.getClusterSize(); i++) {
+            Vm vm = clusterManager.getCluster().getVms().get(i);
+            if (testVmFarFailure(vm.getTreatmentCategory().getSla())) {
+                clusterManager.removeVm(i);
+            }
+        }
     }
 
     /**
      * Test a particular VM in the cluster for failure.
      *
-     * @param sla specifying the uptime for a VM.
+     * @param sla specifying the up time for a VM.
      * @return boolean value indicating the the machine has failed or not.
      */
     private boolean testVmFarFailure(double sla) {

@@ -61,7 +61,7 @@ public class TraceParser {
         long startTime = System.nanoTime();
 
         // Instantiate ClusterManager
-        timePerRequest =  1.0 / clusterManager.computeMaxRps(); //1.0 / 1000;//1.0 / clusterManager.computeMaxRps();
+        timePerRequest =  1.0 / clusterManager.getRpsForOneVm(); //1.0 / 1000;//1.0 / clusterManager.computeCumulativeRpsForCluster();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
         String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
@@ -117,6 +117,13 @@ public class TraceParser {
 
         if (requestTime + taskTimeout >= time) {
 
+            // fast passing of time until we have at least one Vm in the cluster.
+            while (clusterManager.getClusterSize() <= 0) {
+                time = notificationTime;
+                notifyOtherComponentsIfRightTime(time);
+            }
+
+
             Task task = clusterManager.nextVm().getTask();
             if (time  < task.getTaskEndTime()) {
                 time = task.getTaskEndTime();
@@ -138,7 +145,11 @@ public class TraceParser {
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
         // Notify other components of time passing, in 1 second increments.
-        if (requestTime >= notificationTime) {
+        notifyOtherComponentsIfRightTime(time);
+    }
+
+    private void notifyOtherComponentsIfRightTime(double time) {
+        if (time >= notificationTime) {
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
 
@@ -149,11 +160,11 @@ public class TraceParser {
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
             //simulate failure
-//            failureInjector.injectFailure(clusterManager.getCluster());
+            failureInjector.injectFailure(clusterManager);
 
 
             // Set next notification time with 1 second increment.
-            notificationTime = requestTime + 1;
+            notificationTime = time + 1;
             // TODO
             /*
             Time can be incremented with more then one second in current implementation.

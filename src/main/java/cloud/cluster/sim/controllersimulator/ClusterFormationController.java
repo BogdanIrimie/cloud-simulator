@@ -60,7 +60,7 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
-        clusterManager.addVm(new Vm(new TreatmentCategory()));
+        clusterManager.addVm(new Vm(new TreatmentCategory("TC1", 99.00, 3)));
     }
 
     /**

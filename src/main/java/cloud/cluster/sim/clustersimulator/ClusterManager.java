@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -78,7 +79,7 @@ public class ClusterManager {
      *
      * @return maximum number of request that can be fulfilled by the Cluster in one second.
      */
-    public long computeMaxRps() {
+    public long computeCumulativeRpsForCluster() {
         return cluster.getVms().size() * rpsForOneVm;
     }
 
@@ -101,7 +102,12 @@ public class ClusterManager {
         if (currentResourceIndex >= getClusterSize()) {
             currentResourceIndex = 0;
         }
-        return cluster.getVms().get(currentResourceIndex++);
+        if (getClusterSize() <= 0) {
+            return null;
+        }
+        else {
+            return cluster.getVms().get(currentResourceIndex++);
+        }
     }
 
     /**
@@ -129,4 +135,5 @@ public class ClusterManager {
             cluster.getVms().add(currentResourceIndex + 1, vm);
         }
     }
+
 }
