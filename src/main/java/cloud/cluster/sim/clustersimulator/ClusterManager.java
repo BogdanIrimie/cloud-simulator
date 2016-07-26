@@ -5,13 +5,11 @@ import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -19,11 +17,6 @@ import java.util.List;
  */
 @Component
 public class ClusterManager {
-
-    private enum Compression {
-        ADD,
-        SUBTRACT
-    }
 
     private long rpsForOneVm;
     private ClusterExtRep clusterExtRep;
@@ -128,7 +121,16 @@ public class ClusterManager {
         }
         cluster.getVms().remove(id);
 
-        compressAllocationEvolution(Compression.SUBTRACT);
+        compressAllocationEvolution(Reason.SUBTRACT);
+    }
+
+    public void failVm(int id) {
+        if (id < currentResourceIndex) {
+            currentResourceIndex--;
+        }
+        cluster.getVms().remove(id);
+
+        compressAllocationEvolution(Reason.FAIL);
     }
 
     /**
@@ -144,16 +146,21 @@ public class ClusterManager {
             cluster.getVms().add(currentResourceIndex + 1, vm);
         }
 
-        compressAllocationEvolution(Compression.ADD);
+        compressAllocationEvolution(Reason.ADD);
     }
 
-    private void compressAllocationEvolution(Compression compression) {
+    /**
+     * Compress traces for allocations and deallocations that happen at the same time.
+     *
+     * @param reason
+     */
+    private void compressAllocationEvolution(Reason reason) {
         if (allocationEvolution.size() > 0) {
             AllocationState latAllocationState = allocationEvolution.get(allocationEvolution.size() - 1);
 
             if(Math.abs(latAllocationState.getTime() - Time.timeMillis) < 0.00000001) {
                 latAllocationState.setVmNumber(
-                        (compression == Compression.ADD) ?
+                        (reason == Reason.ADD) ?
                                 latAllocationState.getVmNumber() + 1 :
                                 latAllocationState.getVmNumber() - 1);
                 return;
@@ -161,9 +168,15 @@ public class ClusterManager {
         }
 
         allocationEvolution.add(new AllocationState(Time.timeMillis,
-                (compression == Compression.ADD) ? +1: -1));
+                (reason == Reason.ADD) ? +1: -1,
+                reason));
     }
 
+    /**
+     * Traces for VM allocation evolution.
+     *
+     * @return a list with evolution traces.
+     */
     public List<AllocationState> getAllocationEvolution() {
         return allocationEvolution;
     }

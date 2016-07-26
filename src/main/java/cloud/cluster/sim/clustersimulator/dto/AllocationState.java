@@ -3,10 +3,12 @@ package cloud.cluster.sim.clustersimulator.dto;
 public class AllocationState {
     private double time;
     private int vmNumber;
+    private Reason reason;
 
-    public AllocationState(double time, int vmNumber) {
+    public AllocationState(double time, int vmNumber, Reason reason) {
         this.time = time;
         this.vmNumber = vmNumber;
+        this.reason = reason;
     }
 
     public double getTime() {
@@ -23,5 +25,13 @@ public class AllocationState {
 
     public void setVmNumber(int vmNumber) {
         this.vmNumber = vmNumber;
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+
+    public void setReason(Reason reason) {
+        this.reason = reason;
     }
 }

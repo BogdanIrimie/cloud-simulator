@@ -23,13 +23,11 @@ public class FailureInjector {
      * @param clusterManager ClusterManager for which failures will be simulated.
      * @return ClusterManager after failure simulation.
      */
-
-    // TODO needs to be refactor in order to use new cluster.
     public void injectFailure(ClusterManager clusterManager) {
         for (int i = 0; i < clusterManager.getClusterSize(); i++) {
             Vm vm = clusterManager.getCluster().getVms().get(i);
             if (testVmFarFailure(vm.getTreatmentCategory().getSla())) {
-                clusterManager.removeVm(i);
+                clusterManager.failVm(i);
             }
         }
     }

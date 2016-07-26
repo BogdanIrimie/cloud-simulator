@@ -17,14 +17,14 @@ public class AutoClusterScale {
     private int upperUtilisationFactor;
     private int lowerUtilisationFactor;
     private int timeout;
-    private int upperThresholdExceedSuccession;
-    private int lowerThresholdExceedSuccession;
+    private int upperExceedSuccessionLimit;
+    private int lowerExceedSuccessionLimit;
     private int upperThresholdExceedSuccessionLimit;
     private int lowerThresholdExceedSuccessionLimit;
     private int vmCreationTimeout;
     private int vmTerminationTimeout;
-    private long requestInLastSeconds;
-    private long lowerThresholdRequestsInLastSeconds;
+    private long upperRequestsInLastSeconds;
+    private long lowerRequestsInLastSeconds;
 
     public AutoClusterScale() {
         this.upperUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getUpperUtilisationThreshold();
@@ -49,24 +49,24 @@ public class AutoClusterScale {
         long upperThreshold = upperUtilisationFactor * maxRps / 100;
         long lowerThreshold = lowerUtilisationFactor * maxRps / 100;
 
-        // If the upperThreshold is exceeded multiple times in a row, the upperThresholdExceedSuccession will increment.
+        // If the upperThreshold is exceeded multiple times in a row, the upperExceedSuccessionLimit will increment.
         if (requestInLastSecond > upperThreshold) {
-            upperThresholdExceedSuccession++;
-            requestInLastSeconds += requestInLastSecond;
+            upperExceedSuccessionLimit++;
+            upperRequestsInLastSeconds += requestInLastSecond;
         }
         else {
-            upperThresholdExceedSuccession = 0;
-            requestInLastSeconds = 0;
+            upperExceedSuccessionLimit = 0;
+            upperRequestsInLastSeconds = 0;
         }
 
-        // if the lower threshold is exceeded multiple times, increase the lowerThresholdExceedSuccession.
+        // if the lower threshold is exceeded multiple times, increase the lowerExceedSuccessionLimit.
         if (requestInLastSecond < lowerThreshold) {
-            lowerThresholdExceedSuccession++;
-            lowerThresholdRequestsInLastSeconds += requestInLastSecond;
+            lowerExceedSuccessionLimit++;
+            lowerRequestsInLastSeconds += requestInLastSecond;
         }
         else {
-            lowerThresholdExceedSuccession = 0;
-            lowerThresholdRequestsInLastSeconds = 0;
+            lowerExceedSuccessionLimit = 0;
+            lowerRequestsInLastSeconds = 0;
         }
 
         if (timeout > 0) {
@@ -74,23 +74,23 @@ public class AutoClusterScale {
         }
 
         // Allocate VMs if the upper threshold was reached several consecutive times.
-        if (upperThresholdExceedSuccession >= upperThresholdExceedSuccessionLimit && timeout == 0) {
-            long numberOfVmToAllocate = computeNumberOfVmToAllocate(requestInLastSeconds / upperThresholdExceedSuccession, upperThreshold, rpsForOneVm);
+        if (upperExceedSuccessionLimit >= upperThresholdExceedSuccessionLimit && timeout == 0) {
+            long numberOfVmToAllocate = computeNumberOfVmToAllocate(upperRequestsInLastSeconds / upperExceedSuccessionLimit, upperThreshold, rpsForOneVm);
             clusterFormationController.allocateVMs(numberOfVmToAllocate, clusterManager);
 
             timeout = vmCreationTimeout;
-            upperThresholdExceedSuccession = 0;
-            requestInLastSeconds = 0;
+            upperExceedSuccessionLimit = 0;
+            upperRequestsInLastSeconds = 0;
         }
 
         // Remove VMs if the lower threshold was reached several times.
-        if (lowerThresholdExceedSuccession >= lowerThresholdExceedSuccessionLimit && timeout == 0) {
-            long numberOfVmToRemove = computeNumberOfVmToRemove(requestInLastSeconds / lowerThresholdRequestsInLastSeconds, lowerThreshold, rpsForOneVm);
+        if (lowerExceedSuccessionLimit >= lowerThresholdExceedSuccessionLimit && timeout == 0) {
+            long numberOfVmToRemove = computeNumberOfVmToRemove(lowerRequestsInLastSeconds / lowerExceedSuccessionLimit, lowerThreshold, rpsForOneVm);
             clusterFormationController.removeVMs(numberOfVmToRemove, clusterManager);
 
             timeout = vmTerminationTimeout;
-            lowerThresholdExceedSuccession = 0;
-            lowerThresholdRequestsInLastSeconds = 0;
+            lowerExceedSuccessionLimit = 0;
+            lowerRequestsInLastSeconds = 0;
         }
 
         clusterFormationController.incrementTime();
