@@ -109,6 +109,7 @@ public class TraceParser {
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
+            notificationTime = time + 1;
         }
 
         if (requestTime >= time) {
