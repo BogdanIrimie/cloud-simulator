@@ -36,9 +36,9 @@ public class ClusterFormationController {
      * @param clusterManager
      */
     public void removeVMs(long numberOfVmToRemove, ClusterManager clusterManager) {
-        startTimeOfRemoval = time;
         this.clusterManager = clusterManager;
         this.numberOfVmToRemove = numberOfVmToRemove;
+        remove();
     }
 
     /**
@@ -49,10 +49,6 @@ public class ClusterFormationController {
         if (startTimeOfAllocation != -1 && time >=  startTimeOfAllocation + 40) {
             allocate();
             startTimeOfAllocation = -1;
-        }
-        if (startTimeOfRemoval != -1 && time >= startTimeOfRemoval + 15) {
-            remove();
-            startTimeOfRemoval = -1;
         }
     }
 

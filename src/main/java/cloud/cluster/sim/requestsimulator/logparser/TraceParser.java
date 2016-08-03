@@ -39,9 +39,6 @@ public class TraceParser {
     @Autowired
     private FailureInjector failureInjector;
 
-    @Autowired
-    private CostComputer costComputer;
-
     private static final Logger logger = LoggerFactory.getLogger("LogParser.class");
 
     private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
@@ -90,7 +87,7 @@ public class TraceParser {
         logger.info("VM number at end of simulation: " + vmNumberAtEnd);
         return new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter,
-                costComputer.getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
+                clusterManager.getCostComputer().getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
     }
 
     /**
@@ -149,7 +146,7 @@ public class TraceParser {
             lastKnownRequestNumber = totalRequestCounter;
 
             // compute cost
-            costComputer.addCostForLastSecond(clusterManager);
+            clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
 
             // each second notify the auto scaling
             scale.scalePolicy(clusterManager, requestInTheLastSecond);

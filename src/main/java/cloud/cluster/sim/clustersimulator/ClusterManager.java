@@ -5,6 +5,7 @@ import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -24,6 +25,9 @@ public class ClusterManager {
     private int currentResourceIndex = 0;
     private static final Logger logger = LoggerFactory.getLogger(ClusterManager.class);
     private List<AllocationState> allocationEvolution = new ArrayList<AllocationState>();
+
+    @Autowired
+    private CostComputer costComputer;
 
     /**
      * Read ClusterExtRep configuration date from Json file.
@@ -119,6 +123,7 @@ public class ClusterManager {
         if (id < currentResourceIndex) {
             currentResourceIndex--;
         }
+        costComputer.addCostForShutDown(cluster.getVms().get(id));
         cluster.getVms().remove(id);
 
         compressAllocationEvolution(Reason.SUBTRACT);
@@ -181,4 +186,8 @@ public class ClusterManager {
         return allocationEvolution;
     }
 
+
+    public CostComputer getCostComputer() {
+        return costComputer;
+    }
 }

@@ -1,6 +1,8 @@
 package cloud.cluster.sim.clustersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +18,10 @@ public class CostComputer {
         totalCost += clusterManager.getCluster().getVms().stream()
                 .mapToLong(vm -> vm.getTreatmentCategory().getCost())
                 .sum();
+    }
+
+    public void addCostForShutDown(Vm vm) {
+        totalCost += SimSettingsExtractor.getSimulationSettings().getStopVmDelay() * vm.getTreatmentCategory().getCost();
     }
 
 }
