@@ -96,7 +96,7 @@ public class AutoClusterScale {
     }
 
     public void incrementTime() {
-        clusterFormationController.incrementTime();
+        clusterFormationController.signalTimeIncrement();
     }
 
     /**

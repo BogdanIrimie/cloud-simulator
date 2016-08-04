@@ -111,6 +111,7 @@ public class TraceParser {
 
         if (requestTime >= time) {
             time = requestTime;
+            Time.simulationTime = time;
         }
 
         if (requestTime + taskTimeout >= time && clusterManager.getClusterSize() > 0) {

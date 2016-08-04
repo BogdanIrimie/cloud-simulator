@@ -48,7 +48,7 @@ public class ClusterFormationController {
     /**
      * Simulate passing of time in order to start or stop a VM.
      */
-    public void incrementTime() {
+    public void signalTimeIncrement() {
         if (startTimeOfAllocation != -1 && Time.simulationTime >=  startTimeOfAllocation + SimSettingsExtractor.getSimulationSettings().getStartVmDelay()) {
             allocate();
             startTimeOfAllocation = -1;
