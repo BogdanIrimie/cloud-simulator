@@ -167,7 +167,7 @@ public class ClusterManager {
         if (allocationEvolution.size() > 0) {
             AllocationState latAllocationState = allocationEvolution.get(allocationEvolution.size() - 1);
 
-            if(Math.abs(latAllocationState.getTime() - Time.timeMillis) < 0.00000001) {
+            if(Math.abs(latAllocationState.getTime() - Time.simulationTime) < 0.00000001) {
                 latAllocationState.setVmNumber(
                         (reason == Reason.ADD) ?
                                 latAllocationState.getVmNumber() + 1 :
@@ -176,7 +176,7 @@ public class ClusterManager {
             }
         }
 
-        allocationEvolution.add(new AllocationState(Time.timeMillis,
+        allocationEvolution.add(new AllocationState(Time.simulationTime,
                 (reason == Reason.ADD) ? +1: -1,
                 reason));
     }

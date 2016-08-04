@@ -8,7 +8,6 @@ import cloud.cluster.sim.clustersimulator.FailureInjector;
 import cloud.cluster.sim.controllersimulator.AutoClusterScale;
 import cloud.cluster.sim.requestsimulator.dao.RequestDetailsOperations;
 import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
-import cloud.cluster.sim.clustersimulator.CostComputer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class TraceParser {
 
     private static final Logger logger = LoggerFactory.getLogger("LogParser.class");
 
-    private double time = -1, notificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
+    private double time = -1, traceNotificationTime = 0, simulationNotificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
     private long lastKnownRequestNumber;
     private int taskTimeout = 5;
@@ -106,7 +105,8 @@ public class TraceParser {
         double requestTime = requestDetails.getRequestArrivalTime();
         if (time < 0) {
             time = requestTime;
-            notificationTime = time + 1;
+            traceNotificationTime = time + 1;
+            simulationNotificationTime = time + 1;
         }
 
         if (requestTime >= time) {
@@ -119,7 +119,7 @@ public class TraceParser {
             if (time  < task.getTaskEndTime()) {
                 time = task.getTaskEndTime();
             }
-            Time.timeMillis = time;
+            Time.simulationTime = time;
 
             task.setTaskArrivalTime(requestTime);
             task.setTaskStartTime(time);
@@ -141,28 +141,33 @@ public class TraceParser {
     }
 
     private void notifyOtherComponentsIfRightTime(double time, double requestTime) {
-        if ( requestTime >= notificationTime) {
+        if (requestTime >= traceNotificationTime) {
+            Time.logTime = requestTime;
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
-
-            // compute cost
-            clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
 
             // each second notify the auto scaling
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
-            //simulate failure
-            //failureInjector.injectFailure(clusterManager);
-
 
             // Set next notification time with 1 second increment.
-            notificationTime = requestTime + 1;
+            traceNotificationTime = requestTime + 1;
             // TODO
             /*
             Time can be incremented with more then one second in current implementation.
             Maybe add a small mechanism so simulate time passing in increments of 1 second
             to send notifications to other components even when no requests are received.
             */
+        }
+        if (time >= simulationNotificationTime) {
+            // compute cost
+            clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
+            scale.incrementTime();
+
+            //simulate failure
+            //failureInjector.injectFailure(clusterManager);
+
+            simulationNotificationTime = time + 1;
         }
     }
 
