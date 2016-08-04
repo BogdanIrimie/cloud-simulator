@@ -137,11 +137,11 @@ public class TraceParser {
 
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
         // Notify other components of time passing, in 1 second increments.
-        notifyOtherComponentsIfRightTime(time);
+        notifyOtherComponentsIfRightTime(time, requestTime);
     }
 
-    private void notifyOtherComponentsIfRightTime(double time) {
-        if (time >= notificationTime) {
+    private void notifyOtherComponentsIfRightTime(double time, double requestTime) {
+        if ( requestTime >= notificationTime) {
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
 
@@ -152,11 +152,11 @@ public class TraceParser {
             scale.scalePolicy(clusterManager, requestInTheLastSecond);
 
             //simulate failure
-            failureInjector.injectFailure(clusterManager);
+            //failureInjector.injectFailure(clusterManager);
 
 
             // Set next notification time with 1 second increment.
-            notificationTime = time + 1;
+            notificationTime = requestTime + 1;
             // TODO
             /*
             Time can be incremented with more then one second in current implementation.
