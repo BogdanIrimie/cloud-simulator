@@ -120,6 +120,10 @@ public class ClusterManager {
      * @param id of the VM that should be removed.
      */
     public void removeVm(int id) {
+        if (cluster.getVms().size() <= 1) {
+            return;
+        }
+
         if (id < currentResourceIndex) {
             currentResourceIndex--;
         }
