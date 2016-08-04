@@ -4,6 +4,8 @@ import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.dto.Time;
 import cloud.cluster.sim.clustersimulator.dto.TreatmentCategory;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,7 +27,8 @@ public class ClusterFormationController {
      * @param clusterManager
      */
     public void allocateVMs(long numberOfVmToAllocate, ClusterManager clusterManager) {
-        startTimeOfAllocation = Time.simulationTime;
+        startTimeOfAllocation = Time.simulationTime - (Time.simulationTime - Time.logTime > 0 ?
+                Time.simulationTime - Time.logTime : 0);
         this.clusterManager = clusterManager;
         this.numberOfVmToAllocate = numberOfVmToAllocate;
     }
@@ -46,7 +49,7 @@ public class ClusterFormationController {
      * Simulate passing of time in order to start or stop a VM.
      */
     public void incrementTime() {
-        if (startTimeOfAllocation != -1 && Time.simulationTime >=  startTimeOfAllocation + 40) {
+        if (startTimeOfAllocation != -1 && Time.simulationTime >=  startTimeOfAllocation + SimSettingsExtractor.getSimulationSettings().getStartVmDelay()) {
             allocate();
             startTimeOfAllocation = -1;
         }
