@@ -36,7 +36,7 @@ public class ClusterManager {
         this.rpsForOneVm = SimSettingsExtractor.getSimulationSettings().getRpsForVm();
 
         ClassLoader classLoader = getClass().getClassLoader();
-        String path = classLoader.getResource("clusterConfiguration.json").getFile();
+        String path = classLoader.getResource("clusterConfig.json").getFile();
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -50,20 +50,33 @@ public class ClusterManager {
     }
 
     /**
-     * Convert external representaiton of cluster into internal representation.
+     * Convert external representation of cluster into internal representation.
      *
      * @param clusterExtRep representation of cluster in the clusterConfiguration file.
      */
     private void clusterExtRepToCluster(ClusterExtRep clusterExtRep) {
         List<Vm> vmList = new ArrayList<Vm>();
         clusterExtRep.getTgGroup().stream().forEach(tcGroup -> {
-            TreatmentCategory tc =  new TreatmentCategory(tcGroup.getName(), tcGroup.getSla(), tcGroup.getCost());
             for (int i = 0; i < tcGroup.getVmNumber(); i++) {
-                vmList.add(new Vm(tc));
+                vmList.add(new Vm(tcGroup.getTreatmentCategory()));
             }
         });
         cluster =  new Cluster(vmList);
     }
+
+//    private void clusterToClusterExtRep() {
+//        ClusterExtRep clusterExtRep = new ClusterExtRep(new ArrayList<>());
+//
+//        for (Vm vm : cluster.getVms()) {
+//            TreatmentCategory tc = vm.getTreatmentCategory();
+//            if (clusterExtRep.getTgGroup().contains(tc)) {
+//
+//            }
+//            else {
+//                clusterExtRep.getTgGroup().add(new TCGroup(tc.getName(), tc.getSla(), 1));
+//            }
+//        }
+//    }
 
     /**
      * Return the Cluster used by the ClusterManager.
