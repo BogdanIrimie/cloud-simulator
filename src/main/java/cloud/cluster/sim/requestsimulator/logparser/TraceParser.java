@@ -57,14 +57,14 @@ public class TraceParser {
         long startTime = System.nanoTime();
 
         // Instantiate ClusterManager
-        timePerRequest =  1.0 / clusterManager.getRpsForOneVm(); //1.0 / 1000;//1.0 / clusterManager.computeCumulativeRpsForCluster();
+        timePerRequest =  1.0 / clusterManager.getRpsForOneVm();
 
         String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
         String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
 
         Files.walk(Paths.get(pathToTraces))
                 .filter(Files::isRegularFile)                                                                           // only consider files
-                .filter(filePath -> filePath.toString().contains(traceNameRegex))                                             // only files that contain traces in name
+                .filter(filePath -> filePath.toString().contains(traceNameRegex))                                       // only files that contain traces in name
                 .sorted(Comparator.naturalOrder())                                                                      // sort file by name
                 .forEach(filePath -> {
                     logger.info("Trace path:                     " + filePath);

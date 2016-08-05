@@ -17,7 +17,7 @@ public class SimulationStatistics {
     @Id
     private String id;
     private double totalDelay;
-    private double avgDelay;
+    private double avgResponseTime;
     private long executionTime;
     private long totalRequestCounter;
     private long fulfilledRequestCounter;
@@ -36,7 +36,7 @@ public class SimulationStatistics {
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
         this.totalCost = totalCost;
-        this.avgDelay = totalDelay / fulfilledRequestCounter;
+        this.avgResponseTime = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
         this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
     }
@@ -48,7 +48,7 @@ public class SimulationStatistics {
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
         this.totalCost = totalCost;
-        this.avgDelay = totalDelay / fulfilledRequestCounter;
+        this.avgResponseTime = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
         this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
         this.allocationEvolution = allocationEvolution;
@@ -70,12 +70,12 @@ public class SimulationStatistics {
         this.totalDelay = totalDelay;
     }
 
-    public double getAvgDelay() {
-        return avgDelay;
+    public double getAvgResponseTime() {
+        return avgResponseTime;
     }
 
-    public void setAvgDelay(double avgDelay) {
-        this.avgDelay = avgDelay;
+    public void setAvgResponseTime(double avgResponseTime) {
+        this.avgResponseTime = avgResponseTime;
     }
 
     public long getExecutionTime() {
