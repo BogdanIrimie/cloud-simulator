@@ -32,4 +32,19 @@ public class TCGroup {
         this.vmNumber = vmNumber;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TCGroup tcGroup = (TCGroup) o;
+
+        return treatmentCategory.equals(tcGroup.treatmentCategory);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return treatmentCategory.hashCode();
+    }
 }

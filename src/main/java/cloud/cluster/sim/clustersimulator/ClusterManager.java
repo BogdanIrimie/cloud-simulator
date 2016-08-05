@@ -64,19 +64,28 @@ public class ClusterManager {
         cluster =  new Cluster(vmList);
     }
 
-//    private void clusterToClusterExtRep() {
-//        ClusterExtRep clusterExtRep = new ClusterExtRep(new ArrayList<>());
-//
-//        for (Vm vm : cluster.getVms()) {
-//            TreatmentCategory tc = vm.getTreatmentCategory();
-//            if (clusterExtRep.getTgGroup().contains(tc)) {
-//
-//            }
-//            else {
-//                clusterExtRep.getTgGroup().add(new TCGroup(tc.getName(), tc.getSla(), 1));
-//            }
-//        }
-//    }
+    /**
+     * Trnsform internal representation of cluster to external representation.
+     *
+     * @return external representation of cluster.
+     */
+    private ClusterExtRep clusterToClusterExtRep() {
+        ClusterExtRep clusterExtRep = new ClusterExtRep(new ArrayList<>());
+
+        for (Vm vm : cluster.getVms()) {
+            TreatmentCategory tc = vm.getTreatmentCategory();
+            TCGroup searchedTcg = new TCGroup(tc, 0);
+            if (clusterExtRep.getTgGroup().contains(searchedTcg)) {
+                TCGroup externalRepTcg = clusterExtRep.getTgGroup().stream().filter(tcGroup -> tcGroup.equals(searchedTcg)).findFirst().get();
+                externalRepTcg.setVmNumber(externalRepTcg.getVmNumber() + 1);
+            }
+            else {
+                clusterExtRep.getTgGroup().add(new TCGroup(tc, 1));
+            }
+        }
+
+        return clusterExtRep;
+    }
 
     /**
      * Return the Cluster used by the ClusterManager.
@@ -185,13 +194,13 @@ public class ClusterManager {
                         (reason == Reason.ADD) ?
                                 latAllocationState.getVmNumber() + 1 :
                                 latAllocationState.getVmNumber() - 1);
+                latAllocationState.setClusterExtRep(clusterToClusterExtRep());
                 return;
             }
         }
 
         allocationEvolution.add(new AllocationState(Time.simulationTime,
-                (reason == Reason.ADD) ? +1: -1,
-                reason));
+                (reason == Reason.ADD) ? +1: -1, reason, clusterToClusterExtRep()));
     }
 
     /**

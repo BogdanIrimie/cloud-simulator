@@ -41,4 +41,28 @@ public class TreatmentCategory {
     public void setCost(long cost) {
         this.cost = cost;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TreatmentCategory that = (TreatmentCategory) o;
+
+        if (Double.compare(that.sla, sla) != 0) return false;
+        if (cost != that.cost) return false;
+        return name.equals(that.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name.hashCode();
+        temp = Double.doubleToLongBits(sla);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (int) (cost ^ (cost >>> 32));
+        return result;
+    }
 }
