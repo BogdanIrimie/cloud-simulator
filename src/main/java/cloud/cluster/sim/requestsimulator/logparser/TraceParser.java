@@ -166,7 +166,7 @@ public class TraceParser {
             scale.incrementTime();
 
             //simulate failure
-            //failureInjector.injectFailure(clusterManager);
+            failureInjector.injectFailure(clusterManager);
 
             simulationNotificationTime = time + 1;
         }

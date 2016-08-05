@@ -60,7 +60,7 @@ public class ClusterFormationController {
      */
     private void allocate () {
         for (int i = 0; i < numberOfVmToAllocate; i++) {
-            clusterManager.addVm(new Vm(new TreatmentCategory("TC1", 99.00, 3)));
+            clusterManager.addVm(new Vm(new TreatmentCategory("TC1", 99.99, 3)));
         }
     }
 
