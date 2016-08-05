@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 
 public class SimSettingsExtractor {
 
@@ -21,11 +23,11 @@ public class SimSettingsExtractor {
     }
 
     private static SimulationSettings extractSimulationSettings() {
-        String path = SimSettingsExtractor.class.getClassLoader().getResource("simulationSettings.json").getFile();
+        InputStream is = SimSettingsExtractor.class.getClassLoader().getResourceAsStream("simulationSettings.json");
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            simulationStatistics = mapper.readValue(new File(path), SimulationSettings.class);
+            simulationStatistics = mapper.readValue(is, SimulationSettings.class);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

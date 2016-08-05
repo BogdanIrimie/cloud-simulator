@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +37,12 @@ public class ClusterManager {
         this.rpsForOneVm = SimSettingsExtractor.getSimulationSettings().getRpsForVm();
 
         ClassLoader classLoader = getClass().getClassLoader();
-        String path = classLoader.getResource("clusterConfig.json").getFile();
+        InputStream is = classLoader.getResourceAsStream("clusterConfig.json");
 
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-            clusterExtRep = mapper.readValue(new File(path), ClusterExtRep.class);
+            clusterExtRep = mapper.readValue(is, ClusterExtRep.class);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
