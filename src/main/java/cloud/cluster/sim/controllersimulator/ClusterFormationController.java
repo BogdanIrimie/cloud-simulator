@@ -2,10 +2,9 @@ package cloud.cluster.sim.controllersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.dto.Time;
-import cloud.cluster.sim.clustersimulator.dto.TreatmentCategory;
+import cloud.cluster.sim.clustersimulator.dto.MicroDataCenter;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
-import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.stereotype.Component;
 
 /**
@@ -60,7 +59,7 @@ public class ClusterFormationController {
      */
     private void allocate () {
         for (int i = 0; i < numberOfVmToAllocate; i++) {
-            clusterManager.addVm(new Vm(new TreatmentCategory("TC1", 99.99, 3)));
+            clusterManager.addVm(new Vm(new MicroDataCenter("TC1", 99.99, 3)));
         }
     }
 

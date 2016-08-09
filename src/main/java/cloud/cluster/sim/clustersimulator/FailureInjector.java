@@ -1,11 +1,8 @@
 package cloud.cluster.sim.clustersimulator;
 
-import cloud.cluster.sim.clustersimulator.dto.Cluster;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -26,7 +23,7 @@ public class FailureInjector {
     public void injectFailure(ClusterManager clusterManager) {
         for (int i = 0; i < clusterManager.getClusterSize(); i++) {
             Vm vm = clusterManager.getCluster().getVms().get(i);
-            if (testVmFarFailure(vm.getTreatmentCategory().getSla())) {
+            if (testVmFarFailure(vm.getMicroDataCenter().getSla())) {
                 clusterManager.failVm(i);
             }
         }

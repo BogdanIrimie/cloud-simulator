@@ -1,18 +1,18 @@
 package cloud.cluster.sim.clustersimulator.dto;
 
 /**
- * A {@link cloud.cluster.sim.clustersimulator.dto.TreatmentCategory}
+ * A {@link MicroDataCenter}
  * represents the quality requirements for a group of resources, sharing the same SLA.
  */
-public class TreatmentCategory {
+public class MicroDataCenter {
     private String name;
     private double sla;
     private long cost;
 
-    public TreatmentCategory() {
+    public MicroDataCenter() {
     }
 
-    public TreatmentCategory(String name, double sla, long cost) {
+    public MicroDataCenter(String name, double sla, long cost) {
         this.name = name;
         this.sla = sla;
         this.cost = cost;
@@ -47,7 +47,7 @@ public class TreatmentCategory {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TreatmentCategory that = (TreatmentCategory) o;
+        MicroDataCenter that = (MicroDataCenter) o;
 
         if (Double.compare(that.sla, sla) != 0) return false;
         if (cost != that.cost) return false;
