@@ -4,8 +4,12 @@ import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.dto.Time;
 import cloud.cluster.sim.clustersimulator.dto.MicroDataCenter;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.utilities.MicroDataCentersExtractor;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * Take decisions regarding cluster formation.
@@ -59,7 +63,14 @@ public class ClusterFormationController {
      */
     private void allocate () {
         for (int i = 0; i < numberOfVmToAllocate; i++) {
-            clusterManager.addVm(new Vm(new MicroDataCenter("TC1", 99.99, 3)));
+
+            // random allocation of VM type
+            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+
+            Random rand = new Random();
+            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
+
+            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
         }
     }
 
