@@ -13,6 +13,10 @@ public class FailureInjector {
 
     private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
     private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
+    private static final int NUMBER_OF_OUTAGES = 98;
+
+    private int totalNumberOfSeconds = NUMBER_OF_DAYS_FOR_SLA * NUMBER_OF_SECONDS_IN_DAY;
+
 
     /**
      * Simulate failures for all the machines in the cluster.
@@ -36,17 +40,17 @@ public class FailureInjector {
      * @return boolean value indicating the the machine has failed or not.
      */
     private boolean testVmFarFailure(double sla) {
-        int seconds;
-        long secondsOffline;
+        long downtime;
+        double mttr, failures;
 
-        seconds = NUMBER_OF_DAYS_FOR_SLA * NUMBER_OF_SECONDS_IN_DAY;
-        secondsOffline = (long) (seconds *  (100 - sla)) / 100;
+        downtime = (long) (totalNumberOfSeconds *  (100 - sla)) / 100;
+        mttr = downtime / NUMBER_OF_OUTAGES;
+        failures = downtime / mttr;
 
         Random random = new Random();
-        int randomInt = random.nextInt(seconds);
-        long numberOfRestart = secondsOffline / 60;
+        int randomInt = random.nextInt(totalNumberOfSeconds);
 
-        if (randomInt <= secondsOffline) {
+        if (randomInt <= failures) {
             return true;
         }
         return false;
