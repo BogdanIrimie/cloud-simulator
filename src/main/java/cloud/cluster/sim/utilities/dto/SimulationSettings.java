@@ -2,14 +2,14 @@ package cloud.cluster.sim.utilities.dto;
 
 public class SimulationSettings {
     private int taskTimeout = 5;
-    private long startVmDelay = 40;
+    private long startVmDelay = 45;
     private long stopVmDelay = 15;
     private int vmCreationTimeout = 60;
-    private int vmTerminationTimeout = 60;
-    private int lowerUtilisationThreshold = 50;
-    private int upperUtilisationThreshold = 70;
-    private int lowerThresholdExceedSuccessionLimit = 3;
-    private int upperThresholdExceedSuccessionLimit = 3;
+    private int vmTerminationTimeout = 25;
+    private int lowUtilisationThreshold = 50;
+    private int upUtilisationThreshold = 70;
+    private int lowThresholdExceedSuccessionLimit = 21;
+    private int upThresholdExceedSuccessionLimit = 11;
     private long rpsForVm = 100;
     private String pathToTraces = "traces";
     private String regexForTracesName = "trimmed";
@@ -17,16 +17,16 @@ public class SimulationSettings {
     public SimulationSettings() {
     }
 
-    public SimulationSettings(int taskTimeout, long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowerUtilisationThreshold, int upperUtilisationThreshold, int lowerThresholdExceedSuccessionLimit, int upperThresholdExceedSuccessionLimit, long rpsForVm, String pathToTraces, String regexForTracesName) {
+    public SimulationSettings(int taskTimeout, long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowUtilisationThreshold, int upUtilisationThreshold, int lowThresholdExceedSuccessionLimit, int upThresholdExceedSuccessionLimit, long rpsForVm, String pathToTraces, String regexForTracesName) {
         this.taskTimeout = taskTimeout;
         this.startVmDelay = startVmDelay;
         this.stopVmDelay = stopVmDelay;
         this.vmCreationTimeout = vmCreationTimeout;
         this.vmTerminationTimeout = vmTerminationTimeout;
-        this.lowerUtilisationThreshold = lowerUtilisationThreshold;
-        this.upperUtilisationThreshold = upperUtilisationThreshold;
-        this.lowerThresholdExceedSuccessionLimit = lowerThresholdExceedSuccessionLimit;
-        this.upperThresholdExceedSuccessionLimit = upperThresholdExceedSuccessionLimit;
+        this.lowUtilisationThreshold = lowUtilisationThreshold;
+        this.upUtilisationThreshold = upUtilisationThreshold;
+        this.lowThresholdExceedSuccessionLimit = lowThresholdExceedSuccessionLimit;
+        this.upThresholdExceedSuccessionLimit = upThresholdExceedSuccessionLimit;
         this.rpsForVm = rpsForVm;
         this.pathToTraces = pathToTraces;
         this.regexForTracesName = regexForTracesName;
@@ -72,36 +72,36 @@ public class SimulationSettings {
         this.vmTerminationTimeout = vmTerminationTimeout;
     }
 
-    public int getLowerUtilisationThreshold() {
-        return lowerUtilisationThreshold;
+    public int getLowUtilisationThreshold() {
+        return lowUtilisationThreshold;
     }
 
-    public void setLowerUtilisationThreshold(int lowerUtilisationThreshold) {
-        this.lowerUtilisationThreshold = lowerUtilisationThreshold;
+    public void setLowUtilisationThreshold(int lowUtilisationThreshold) {
+        this.lowUtilisationThreshold = lowUtilisationThreshold;
     }
 
-    public int getUpperUtilisationThreshold() {
-        return upperUtilisationThreshold;
+    public int getUpUtilisationThreshold() {
+        return upUtilisationThreshold;
     }
 
-    public void setUpperUtilisationThreshold(int upperUtilisationThreshold) {
-        this.upperUtilisationThreshold = upperUtilisationThreshold;
+    public void setUpUtilisationThreshold(int upUtilisationThreshold) {
+        this.upUtilisationThreshold = upUtilisationThreshold;
     }
 
-    public int getLowerThresholdExceedSuccessionLimit() {
-        return lowerThresholdExceedSuccessionLimit;
+    public int getLowThresholdExceedSuccessionLimit() {
+        return lowThresholdExceedSuccessionLimit;
     }
 
-    public void setLowerThresholdExceedSuccessionLimit(int lowerThresholdExceedSuccessionLimit) {
-        this.lowerThresholdExceedSuccessionLimit = lowerThresholdExceedSuccessionLimit;
+    public void setLowThresholdExceedSuccessionLimit(int lowThresholdExceedSuccessionLimit) {
+        this.lowThresholdExceedSuccessionLimit = lowThresholdExceedSuccessionLimit;
     }
 
-    public int getUpperThresholdExceedSuccessionLimit() {
-        return upperThresholdExceedSuccessionLimit;
+    public int getUpThresholdExceedSuccessionLimit() {
+        return upThresholdExceedSuccessionLimit;
     }
 
-    public void setUpperThresholdExceedSuccessionLimit(int upperThresholdExceedSuccessionLimit) {
-        this.upperThresholdExceedSuccessionLimit = upperThresholdExceedSuccessionLimit;
+    public void setUpThresholdExceedSuccessionLimit(int upThresholdExceedSuccessionLimit) {
+        this.upThresholdExceedSuccessionLimit = upThresholdExceedSuccessionLimit;
     }
 
     public long getRpsForVm() {

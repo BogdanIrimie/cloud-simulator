@@ -27,10 +27,10 @@ public class AutoClusterScale {
     private long lowerRequestsInLastSeconds;
 
     public AutoClusterScale() {
-        this.upperUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getUpperUtilisationThreshold();
-        this.lowerUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getLowerUtilisationThreshold();
-        this.upperThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getUpperThresholdExceedSuccessionLimit();
-        this.lowerThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getLowerThresholdExceedSuccessionLimit();
+        this.upperUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getUpUtilisationThreshold();
+        this.lowerUtilisationFactor = SimSettingsExtractor.getSimulationSettings().getLowUtilisationThreshold();
+        this.upperThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getUpThresholdExceedSuccessionLimit();
+        this.lowerThresholdExceedSuccessionLimit = SimSettingsExtractor.getSimulationSettings().getLowThresholdExceedSuccessionLimit();
         this.vmCreationTimeout = SimSettingsExtractor.getSimulationSettings().getVmCreationTimeout();
         this.vmTerminationTimeout = SimSettingsExtractor.getSimulationSettings().getVmTerminationTimeout();
     }
@@ -39,8 +39,8 @@ public class AutoClusterScale {
      * Decide to scale when the threshold is exceeded for multiple times in a row
      * and when there is no timeout from the last decision to scale.
      *
-     * @param clusterManager
-     * @param requestInLastSecond
+     * @param clusterManager allows operations on cluster.
+     * @param requestInLastSecond number of requests received in the last second.
      */
     public void scalePolicy(ClusterManager clusterManager, long requestInLastSecond) {
         long rpsForOneVm  = clusterManager.getRpsForOneVm();
