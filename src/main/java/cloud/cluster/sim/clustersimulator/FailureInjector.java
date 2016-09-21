@@ -1,6 +1,7 @@
 package cloud.cluster.sim.clustersimulator;
 
 import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -13,7 +14,6 @@ public class FailureInjector {
 
     private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
     private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
-    private static final int NUMBER_OF_OUTAGES = 98;
 
     private int totalNumberOfSeconds = NUMBER_OF_DAYS_FOR_SLA * NUMBER_OF_SECONDS_IN_DAY;
 
@@ -44,7 +44,7 @@ public class FailureInjector {
         double mttr, failures;
 
         downtime = (long) (totalNumberOfSeconds *  (100 - sla)) / 100;
-        mttr = downtime / NUMBER_OF_OUTAGES;
+        mttr = SimSettingsExtractor.getSimulationSettings().getMttr();
         failures = downtime / mttr;
 
         Random random = new Random();

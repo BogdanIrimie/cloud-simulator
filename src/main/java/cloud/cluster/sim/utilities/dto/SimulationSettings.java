@@ -11,13 +11,14 @@ public class SimulationSettings {
     private int lowThresholdExceedSuccessionLimit = 21;
     private int upThresholdExceedSuccessionLimit = 11;
     private long rpsForVm = 100;
+    private int mttr = 120;
     private String pathToTraces = "traces";
     private String regexForTracesName = "trimmed";
 
     public SimulationSettings() {
     }
 
-    public SimulationSettings(int taskTimeout, long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowUtilisationThreshold, int upUtilisationThreshold, int lowThresholdExceedSuccessionLimit, int upThresholdExceedSuccessionLimit, long rpsForVm, String pathToTraces, String regexForTracesName) {
+    public SimulationSettings(int taskTimeout, long startVmDelay, long stopVmDelay, int vmCreationTimeout, int vmTerminationTimeout, int lowUtilisationThreshold, int upUtilisationThreshold, int lowThresholdExceedSuccessionLimit, int upThresholdExceedSuccessionLimit, long rpsForVm, int mttr, String pathToTraces, String regexForTracesName) {
         this.taskTimeout = taskTimeout;
         this.startVmDelay = startVmDelay;
         this.stopVmDelay = stopVmDelay;
@@ -28,6 +29,7 @@ public class SimulationSettings {
         this.lowThresholdExceedSuccessionLimit = lowThresholdExceedSuccessionLimit;
         this.upThresholdExceedSuccessionLimit = upThresholdExceedSuccessionLimit;
         this.rpsForVm = rpsForVm;
+        this.mttr = mttr;
         this.pathToTraces = pathToTraces;
         this.regexForTracesName = regexForTracesName;
     }
@@ -110,6 +112,14 @@ public class SimulationSettings {
 
     public void setRpsForVm(long rpsForVm) {
         this.rpsForVm = rpsForVm;
+    }
+
+    public int getMttr() {
+        return mttr;
+    }
+
+    public void setMttr(int mttr) {
+        this.mttr = mttr;
     }
 
     public String getPathToTraces() {
