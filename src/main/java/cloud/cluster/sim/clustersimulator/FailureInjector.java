@@ -2,7 +2,6 @@ package cloud.cluster.sim.clustersimulator;
 
 import cloud.cluster.sim.clustersimulator.dto.Chance;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
-import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;

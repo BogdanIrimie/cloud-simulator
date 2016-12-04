@@ -136,7 +136,7 @@ public class TraceParser {
             responseTime = -1;
         }
 
-        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
+        totalRequestCounter++;
         // Notify other components of time passing, in 1 second increments.
         notifyOtherComponentsIfRightTime(time, requestTime);
     }
