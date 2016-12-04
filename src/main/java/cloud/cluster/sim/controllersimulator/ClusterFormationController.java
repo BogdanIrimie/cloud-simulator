@@ -63,20 +63,32 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
-//        for (int i = 0; i < numberOfVmToAllocate; i++) {
-//
-//            // random allocation of VM type
-//            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
-//
-//            Random rand = new Random();
-//            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
-//
-//            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
-//        }
+        greedyAllocation();
+    }
 
+    /**
+     * Random allocation of VM when a scale up is done.
+     */
+    private void randomAllocation() {
+        for (int i = 0; i < numberOfVmToAllocate; i++) {
+            // random allocation of VM type
+            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+
+            Random rand = new Random();
+            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
+
+            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
+        }
+    }
+
+    /**
+     * Greedy allocation of VM types, the first VM that matches the desired availability
+     * and has the lowest cost is allocated to the cluster when a scale up is done.
+     */
+    private void greedyAllocation() {
         for (int i = 0; i < numberOfVmToAllocate; i++) {
 
-            // New greedy implementation.
+            // greedy allocation of VM types
             List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
             mDClist.sort((a, b) -> a.compareTo(b));
             FailureChanceComputer fcc = new FailureChanceComputer();
