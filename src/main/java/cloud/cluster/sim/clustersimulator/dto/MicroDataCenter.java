@@ -4,7 +4,7 @@ package cloud.cluster.sim.clustersimulator.dto;
  * A {@link MicroDataCenter}
  * represents the quality requirements for a group of resources, sharing the same SLA.
  */
-public class MicroDataCenter {
+public class MicroDataCenter implements Comparable<MicroDataCenter> {
     private String name;
     private double sla;
     private long cost;
@@ -65,4 +65,11 @@ public class MicroDataCenter {
         result = 31 * result + (int) (cost ^ (cost >>> 32));
         return result;
     }
+
+
+    @Override
+    public int compareTo(MicroDataCenter mDc) {
+        return (int)(this.getCost() - mDc.getCost());
+    }
+
 }

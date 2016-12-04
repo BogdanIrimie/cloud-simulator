@@ -27,7 +27,7 @@ public class Chance {
     }
 
     public double getChance() {
-        chance = favorable / possible;
+        chance = (double)favorable / possible;
         return chance;
     }
 

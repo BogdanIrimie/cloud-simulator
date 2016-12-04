@@ -8,8 +8,8 @@
   "upUtilisationThreshold": 70,
   "lowThresholdExceedSuccessionLimit": 21,
   "upThresholdExceedSuccessionLimit": 3,
-  "rpsForVm": 100,
-  "mttr": 120,
+  "rpsForVm": 1000,
+  "mttr": 263,
   "pathToTraces": "traces",
-  "regexForTracesName": "constant"
+  "regexForTracesName": "trimmed"
 }

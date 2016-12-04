@@ -1,6 +1,7 @@
 package cloud.cluster.sim.controllersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.FailureChanceComputer;
 import cloud.cluster.sim.clustersimulator.dto.Time;
 import cloud.cluster.sim.clustersimulator.dto.MicroDataCenter;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
@@ -62,15 +63,32 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
+//        for (int i = 0; i < numberOfVmToAllocate; i++) {
+//
+//            // random allocation of VM type
+//            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+//
+//            Random rand = new Random();
+//            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
+//
+//            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
+//        }
+
         for (int i = 0; i < numberOfVmToAllocate; i++) {
 
-            // random allocation of VM type
+            // New greedy implementation.
             List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+            mDClist.sort((a, b) -> a.compareTo(b));
+            FailureChanceComputer fcc = new FailureChanceComputer();
 
-            Random rand = new Random();
-            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
-
-            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
+            int mdcIndex = 0;
+            double chanceFailAtTheSameTime = 1; // 100% percent chance
+            while (chanceFailAtTheSameTime > 0.01 && mdcIndex < mDClist.size()) {
+                chanceFailAtTheSameTime = fcc.failAtTheSameTime(clusterManager, mDClist.get(mdcIndex));
+                mdcIndex++;
+            }
+            // assign value if change is ok or if we ran out of mdc types
+            clusterManager.addVm(new Vm(mDClist.get(--mdcIndex)));
         }
     }
 
