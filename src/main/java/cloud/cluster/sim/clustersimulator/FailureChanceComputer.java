@@ -1,10 +1,7 @@
 package cloud.cluster.sim.clustersimulator;
 
-import cloud.cluster.sim.clustersimulator.dto.Chance;
 import cloud.cluster.sim.clustersimulator.dto.MicroDataCenter;
-import cloud.cluster.sim.clustersimulator.dto.Vm;
 
-import java.util.List;
 
 public class FailureChanceComputer {
 
