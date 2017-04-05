@@ -14,10 +14,10 @@ import java.io.IOException;
 public class Simulator {
 
     @Autowired
-    TraceParser traceParser;
+    private TraceParser traceParser;
 
     @Autowired
-    SimulationStatisticsOperations simulationStatisticsOperations;
+    private SimulationStatisticsOperations simulationStatisticsOperations;
 
     private static final Logger logger = LoggerFactory.getLogger(Simulator.class);
 
@@ -29,6 +29,7 @@ public class Simulator {
         simulationStatisticsOperations.insert(simulationStatistics);
         logger.info("Average response time was:      " + String.format("%.10f", avgResponseTime));
         logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
+        logger.info("Number of request fulfilled:    " + simulationStatistics.getFulfilledRequestCounter());
         logger.info("Total cost:                     " + simulationStatistics.getTotalCost());
     }
 

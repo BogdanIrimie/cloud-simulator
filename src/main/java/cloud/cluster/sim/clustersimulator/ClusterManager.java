@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -57,9 +56,9 @@ public class ClusterManager {
      */
     private void clusterExtRepToCluster(ClusterExtRep clusterExtRep) {
         List<Vm> vmList = new ArrayList<Vm>();
-        clusterExtRep.getTgGroup().stream().forEach(tcGroup -> {
-            for (int i = 0; i < tcGroup.getVmNumber(); i++) {
-                vmList.add(new Vm(tcGroup.getTreatmentCategory()));
+        clusterExtRep.getMdcGroup().stream().forEach(mdcGroup -> {
+            for (int i = 0; i < mdcGroup.getVmNumber(); i++) {
+                vmList.add(new Vm(mdcGroup.getMicroDataCenter()));
             }
         });
         cluster =  new Cluster(vmList);
@@ -74,14 +73,14 @@ public class ClusterManager {
         ClusterExtRep clusterExtRep = new ClusterExtRep(new ArrayList<>());
 
         for (Vm vm : cluster.getVms()) {
-            TreatmentCategory tc = vm.getTreatmentCategory();
-            TCGroup searchedTcg = new TCGroup(tc, 0);
-            if (clusterExtRep.getTgGroup().contains(searchedTcg)) {
-                TCGroup externalRepTcg = clusterExtRep.getTgGroup().stream().filter(tcGroup -> tcGroup.equals(searchedTcg)).findFirst().get();
+            MicroDataCenter tc = vm.getMicroDataCenter();
+            MdcGroup searchedTcg = new MdcGroup(tc, 0);
+            if (clusterExtRep.getMdcGroup().contains(searchedTcg)) {
+                MdcGroup externalRepTcg = clusterExtRep.getMdcGroup().stream().filter(mdcGroup -> mdcGroup.equals(searchedTcg)).findFirst().get();
                 externalRepTcg.setVmNumber(externalRepTcg.getVmNumber() + 1);
             }
             else {
-                clusterExtRep.getTgGroup().add(new TCGroup(tc, 1));
+                clusterExtRep.getMdcGroup().add(new MdcGroup(tc, 1));
             }
         }
 

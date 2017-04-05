@@ -1,25 +1,25 @@
 {
-  "tgGroup": [
+  "mdcGroup": [
     {
-      "treatmentCategory" : {
-        "name": "TC1",
-        "sla": 90.00,
+      "microDataCenter" : {
+        "name": "mDC_1",
+        "sla": 99.99,
         "cost": 3
       },
-      "vmNumber": 1
+      "vmNumber": 10
     },
     {
-      "treatmentCategory" : {
-        "name": "TC2",
-        "sla": 70.00,
+      "microDataCenter" : {
+        "name": "mDC_2",
+        "sla": 99.00,
         "cost": 2
       },
       "vmNumber": 1
     },
     {
-      "treatmentCategory" : {
-        "name": "TC3",
-        "sla": 50.00,
+      "microDataCenter" : {
+        "name": "mDC_3",
+        "sla": 98.00,
         "cost": 1
       },
       "vmNumber": 1

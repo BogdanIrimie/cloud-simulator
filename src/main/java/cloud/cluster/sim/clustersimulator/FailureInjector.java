@@ -1,11 +1,9 @@
 package cloud.cluster.sim.clustersimulator;
 
-import cloud.cluster.sim.clustersimulator.dto.Cluster;
+import cloud.cluster.sim.clustersimulator.dto.Chance;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -13,9 +11,6 @@ import java.util.Random;
  */
 @Component
 public class FailureInjector {
-
-    private static final int NUMBER_OF_DAYS_FOR_SLA = 30;
-    private static final int NUMBER_OF_SECONDS_IN_DAY = 86400;          // 24 hours * 60 minutes * 60 seconds
 
     /**
      * Simulate failures for all the machines in the cluster.
@@ -26,7 +21,7 @@ public class FailureInjector {
     public void injectFailure(ClusterManager clusterManager) {
         for (int i = 0; i < clusterManager.getClusterSize(); i++) {
             Vm vm = clusterManager.getCluster().getVms().get(i);
-            if (testVmFarFailure(vm.getTreatmentCategory().getSla())) {
+            if (testVmFarFailure(vm.getMicroDataCenter().getSla())) {
                 clusterManager.failVm(i);
             }
         }
@@ -39,17 +34,16 @@ public class FailureInjector {
      * @return boolean value indicating the the machine has failed or not.
      */
     private boolean testVmFarFailure(double sla) {
-        int seconds;
-        long secondsOffline;
+        long downtime;
+        double mttr, failures;
 
-        seconds = NUMBER_OF_DAYS_FOR_SLA * NUMBER_OF_SECONDS_IN_DAY;
-        secondsOffline = (long) (seconds *  (100 - sla)) / 100;
+        FailureChance fc = new FailureChance();
+        Chance chance = fc.compute(sla);
 
         Random random = new Random();
-        int randomInt = random.nextInt(seconds);
-        long numberOfRestart = secondsOffline / 60;
+        int randomInt = random.nextInt(chance.getPossible());
 
-        if (randomInt <= secondsOffline) {
+        if (randomInt <= chance.getFavorable()) {
             return true;
         }
         return false;

@@ -6,20 +6,20 @@ import java.util.List;
  * ClusterManager contains a list a treatment category groups.
  */
 public class ClusterExtRep {
-    private List<TCGroup> tgGroup;
+    private List<MdcGroup> mdcGroup;
 
     public ClusterExtRep() {
     }
 
-    public ClusterExtRep(List<TCGroup> tgGroup) {
-        this.tgGroup = tgGroup;
+    public ClusterExtRep(List<MdcGroup> mdcGroup) {
+        this.mdcGroup = mdcGroup;
     }
 
-    public List<TCGroup> getTgGroup() {
-        return tgGroup;
+    public List<MdcGroup> getMdcGroup() {
+        return mdcGroup;
     }
 
-    public void setTgGroup(List<TCGroup> tgGroup) {
-        this.tgGroup = tgGroup;
+    public void setMdcGroup(List<MdcGroup> mdcGroup) {
+        this.mdcGroup = mdcGroup;
     }
 }

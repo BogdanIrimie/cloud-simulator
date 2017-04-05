@@ -5,16 +5,16 @@ package cloud.cluster.sim.clustersimulator.dto;
  */
 public class Vm {
     private Task task;
-    private TreatmentCategory treatmentCategory;
+    private MicroDataCenter microDataCenter;
 
-    public Vm(TreatmentCategory treatmentCategory) {
-        this.treatmentCategory = treatmentCategory;
+    public Vm(MicroDataCenter microDataCenter) {
+        this.microDataCenter = microDataCenter;
         this.task = new Task();
     }
 
-    public Vm(Task task, TreatmentCategory treatmentCategory) {
+    public Vm(Task task, MicroDataCenter microDataCenter) {
         this.task = task;
-        this.treatmentCategory = treatmentCategory;
+        this.microDataCenter = microDataCenter;
     }
 
     public Task getTask() {
@@ -25,11 +25,11 @@ public class Vm {
         this.task = task;
     }
 
-    public TreatmentCategory getTreatmentCategory() {
-        return treatmentCategory;
+    public MicroDataCenter getMicroDataCenter() {
+        return microDataCenter;
     }
 
-    public void setTreatmentCategory(TreatmentCategory treatmentCategory) {
-        this.treatmentCategory = treatmentCategory;
+    public void setMicroDataCenter(MicroDataCenter microDataCenter) {
+        this.microDataCenter = microDataCenter;
     }
 }

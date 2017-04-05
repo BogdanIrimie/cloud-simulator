@@ -1,14 +1,15 @@
 {
   "taskTimeout": 5,
-  "startVmDelay": 40,
+  "startVmDelay": 45,
   "stopVmDelay": 15,
   "vmCreationTimeout": 60,
-  "vmTerminationTimeout": 60,
-  "lowerUtilisationThreshold": 60,
-  "upperUtilisationThreshold": 70,
-  "lowerThresholdExceedSuccessionLimit": 3,
-  "upperThresholdExceedSuccessionLimit": 3,
-  "rpsForVm": 100,
+  "vmTerminationTimeout": 25,
+  "lowUtilisationThreshold": 50,
+  "upUtilisationThreshold": 70,
+  "lowThresholdExceedSuccessionLimit": 21,
+  "upThresholdExceedSuccessionLimit": 3,
+  "rpsForVm": 1000,
+  "mttr": 263,
   "pathToTraces": "traces",
   "regexForTracesName": "trimmed"
 }

@@ -1,12 +1,16 @@
 package cloud.cluster.sim.controllersimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.FailureChanceComputer;
 import cloud.cluster.sim.clustersimulator.dto.Time;
-import cloud.cluster.sim.clustersimulator.dto.TreatmentCategory;
+import cloud.cluster.sim.clustersimulator.dto.MicroDataCenter;
 import cloud.cluster.sim.clustersimulator.dto.Vm;
+import cloud.cluster.sim.utilities.MicroDataCentersExtractor;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
-import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * Take decisions regarding cluster formation.
@@ -59,8 +63,44 @@ public class ClusterFormationController {
      * After a VM is started, it is allocated to the cluster.
      */
     private void allocate () {
+        greedyAllocation();
+    }
+
+    /**
+     * Random allocation of VM when a scale up is done.
+     */
+    private void randomAllocation() {
         for (int i = 0; i < numberOfVmToAllocate; i++) {
-            clusterManager.addVm(new Vm(new TreatmentCategory("TC1", 99.99, 3)));
+            // random allocation of VM type
+            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+
+            Random rand = new Random();
+            int randomMicroDataCenterIndex = rand.nextInt(mDClist.size());
+
+            clusterManager.addVm(new Vm(mDClist.get(randomMicroDataCenterIndex)));
+        }
+    }
+
+    /**
+     * Greedy allocation of VM types, the first VM that matches the desired availability
+     * and has the lowest cost is allocated to the cluster when a scale up is done.
+     */
+    private void greedyAllocation() {
+        for (int i = 0; i < numberOfVmToAllocate; i++) {
+
+            // greedy allocation of VM types
+            List<MicroDataCenter> mDClist = new MicroDataCentersExtractor().extractMicroDataCenters();
+            mDClist.sort((a, b) -> a.compareTo(b));
+            FailureChanceComputer fcc = new FailureChanceComputer();
+
+            int mdcIndex = 0;
+            double chanceFailAtTheSameTime = 1; // 100% percent chance
+            while (chanceFailAtTheSameTime > 0.01 && mdcIndex < mDClist.size()) {
+                chanceFailAtTheSameTime = fcc.failAtTheSameTime(clusterManager, mDClist.get(mdcIndex));
+                mdcIndex++;
+            }
+            // assign value if change is ok or if we ran out of mdc types
+            clusterManager.addVm(new Vm(mDClist.get(--mdcIndex)));
         }
     }
 
