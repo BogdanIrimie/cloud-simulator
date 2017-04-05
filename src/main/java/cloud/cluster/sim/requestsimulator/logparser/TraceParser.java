@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,7 +38,7 @@ public class TraceParser {
     @Autowired
     private FailureInjector failureInjector;
 
-    private static final Logger logger = LoggerFactory.getLogger("LogParser.class");
+    private static final Logger logger = LoggerFactory.getLogger(TraceParser.class);
 
     private double time = -1, traceNotificationTime = 0, simulationNotificationTime = 0, totalDelay = 0, responseTime = 0, timePerRequest = 1.0 / 3000;
     private long totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, requestInTheLastSecond;
@@ -73,7 +73,7 @@ public class TraceParser {
                                 .map(line -> line.split("\\s+"))
                                 .forEach(splittedLine -> parseLog(splittedLine));
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     }
                 });
 
@@ -173,3 +173,4 @@ public class TraceParser {
     }
 
 }
+
