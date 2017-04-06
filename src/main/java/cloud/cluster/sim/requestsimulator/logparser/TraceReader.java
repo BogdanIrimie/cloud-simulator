@@ -12,33 +12,43 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
 
+/**
+ * Read trace data from files.
+ */
 public class TraceReader {
 
     private static final Logger logger = LoggerFactory.getLogger(TraceReader.class);
 
     private BufferedReader br = null;
-    private String[] files = null;
+    private String[] fileNames = null;
     private int fileNumber = 0;
 
+    /**
+     * Stores all file names from which we should read trace data.
+     *
+     * @param pathToTraces path from where to read trace files
+     * @param traceNameRegex a regex for identifying valid trace files
+     * @throws IOException
+     */
     public TraceReader(String pathToTraces, String traceNameRegex) throws IOException {
-        files = Files.walk(Paths.get(pathToTraces))
-                 .filter(Files::isRegularFile)                                                                           // only consider files
-                 .filter(filePath -> filePath.toString().contains(traceNameRegex))                                       // only files that contain traces in name
+        fileNames = Files.walk(Paths.get(pathToTraces))
+                 .filter(Files::isRegularFile)                                                                           // only consider fileNames
+                 .filter(filePath -> filePath.toString().contains(traceNameRegex))                                       // only fileNames that contain traces in name
                  .sorted(Comparator.naturalOrder())
                  .map(file -> file.toString())
                  .toArray(String[]::new);
     }
 
     /**
-     *
+     * Provides a buffered reader for the next file.
      *
      * @return null if there are no more file to read, or a file if there are files.
      * @throws FileNotFoundException
      */
     @Nullable
     private BufferedReader readFromNextFile() throws FileNotFoundException {
-        if (fileNumber < files.length) {
-            br = new BufferedReader(new FileReader(files[fileNumber]));
+        if (fileNumber < fileNames.length) {
+            br = new BufferedReader(new FileReader(fileNames[fileNumber]));
             fileNumber++;
             return br;
         }
@@ -47,12 +57,18 @@ public class TraceReader {
         }
     }
 
+    /**
+     * Provide the next line of trace data.
+     *
+     * @return a line of trace data or null if there are no more lines to read.
+     * @throws IOException
+     */
     @Nullable
     public String getNextTrace() throws IOException {
         String traceLine = null;
 
         if (br == null) {
-            // if there are no more files to read.
+            // if there are no more fileNames to read.
             if ((br = readFromNextFile()) == null) {
                 return null;
             }
@@ -63,7 +79,7 @@ public class TraceReader {
         // search for the next line in the current file or in the next ones
         while (traceLine == null) {
             if (checkNextFile) {
-                // if there are no more files to read.
+                // if there are no more fileNames to read.
                 if ((br = readFromNextFile()) == null) {
                     return null;
                 }
