@@ -1,5 +1,6 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +27,22 @@ public class TraceReader {
     /**
      * Stores all file names from which we should read trace data.
      *
-     * @param pathToTraces path from where to read trace files
-     * @param traceNameRegex a regex for identifying valid trace files
      * @throws IOException
      */
-    public TraceReader(String pathToTraces, String traceNameRegex) throws IOException {
-        fileNames = Files.walk(Paths.get(pathToTraces))
-                 .filter(Files::isRegularFile)                                                                           // only consider fileNames
-                 .filter(filePath -> filePath.toString().contains(traceNameRegex))                                       // only fileNames that contain traces in name
-                 .sorted(Comparator.naturalOrder())
-                 .map(file -> file.toString())
-                 .toArray(String[]::new);
+    public TraceReader() {
+        String pathToTraces = SimSettingsExtractor.getSimulationSettings().getPathToTraces();
+        String traceNameRegex = SimSettingsExtractor.getSimulationSettings().getRegexForTracesName();
+
+        try {
+            fileNames = Files.walk(Paths.get(pathToTraces))
+                     .filter(Files::isRegularFile)                                                                           // only consider fileNames
+                     .filter(filePath -> filePath.toString().contains(traceNameRegex))                                       // only fileNames that contain traces in name
+                     .sorted(Comparator.naturalOrder())
+                     .map(file -> file.toString())
+                     .toArray(String[]::new);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     /**
@@ -64,48 +70,48 @@ public class TraceReader {
      * @throws IOException
      */
     @Nullable
-    public String getNextTrace() throws IOException {
+    public String getNextTrace() {
         String traceLine = null;
 
-        if (br == null) {
-            // if there are no more fileNames to read.
-            if ((br = readFromNextFile()) == null) {
-                return null;
-            }
-        }
-
-        boolean checkNextFile = false;
-
-        // search for the next line in the current file or in the next ones
-        while (traceLine == null) {
-            if (checkNextFile) {
+        try {
+            if (br == null) {
                 // if there are no more fileNames to read.
                 if ((br = readFromNextFile()) == null) {
                     return null;
                 }
             }
 
-            traceLine = br.readLine();
-            checkNextFile = true;
+            boolean checkNextFile = false;
+
+            // search for the next line in the current file or in the next ones
+            while (traceLine == null) {
+                if (checkNextFile) {
+                    // if there are no more fileNames to read.
+                    if ((br = readFromNextFile()) == null) {
+                        return null;
+                    }
+                }
+
+                traceLine = br.readLine();
+                checkNextFile = true;
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
         }
 
         return traceLine;
     }
 
     public static void main(String[] args) {
-        try {
-            TraceReader tr = new TraceReader("traces", "trimmed");
-            String line;
-            int counter = 0;
+        TraceReader tr = new TraceReader();
+        String line;
+        int counter = 0;
 
-            while ((line = tr.getNextTrace()) != null) {
-                counter++;
-            }
-
-            System.out.println("Counted " + counter +" lines");
-        } catch (IOException e) {
-            e.printStackTrace();
+        while ((line = tr.getNextTrace()) != null) {
+            counter++;
         }
+
+        System.out.println("Counted " + counter +" lines");
     }
 }
 
