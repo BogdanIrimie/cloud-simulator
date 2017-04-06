@@ -1,5 +1,6 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
+import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
@@ -46,24 +47,6 @@ public class TraceReader {
     }
 
     /**
-     * Provides a buffered reader for the next file.
-     *
-     * @return null if there are no more file to read, or a file if there are files.
-     * @throws FileNotFoundException
-     */
-    @Nullable
-    private BufferedReader readFromNextFile() throws FileNotFoundException {
-        if (fileNumber < fileNames.length) {
-            br = new BufferedReader(new FileReader(fileNames[fileNumber]));
-            fileNumber++;
-            return br;
-        }
-        else {
-            return null;
-        }
-    }
-
-    /**
      * Provide the next line of trace data.
      *
      * @return a line of trace data or null if there are no more lines to read.
@@ -99,17 +82,42 @@ public class TraceReader {
             logger.error(e.getMessage(), e);
         }
 
-        return traceLine;
+        return  traceLine;
     }
+
+    /**
+     * Provides a buffered reader for the next file.
+     *
+     * @return null if there are no more file to read, or a file if there are files.
+     * @throws FileNotFoundException
+     */
+    @Nullable
+    private BufferedReader readFromNextFile() throws FileNotFoundException {
+        if (fileNumber < fileNames.length) {
+            br = new BufferedReader(new FileReader(fileNames[fileNumber]));
+            fileNumber++;
+            return br;
+        }
+        else {
+            return null;
+        }
+    }
+
 
     public static void main(String[] args) {
         TraceReader tr = new TraceReader();
         String line;
         int counter = 0;
 
+        long startTime = System.nanoTime();
+
         while ((line = tr.getNextTrace()) != null) {
             counter++;
         }
+
+        long endTime = System.nanoTime();
+        long executionTime = (endTime - startTime) / 1000000000;
+        logger.info("Time spend executing:           " + executionTime + " seconds");
 
         System.out.println("Counted " + counter +" lines");
     }
