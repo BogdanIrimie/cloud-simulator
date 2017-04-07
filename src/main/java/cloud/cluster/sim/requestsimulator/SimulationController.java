@@ -1,8 +1,12 @@
 package cloud.cluster.sim.requestsimulator;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
+import cloud.cluster.sim.clustersimulator.FailureInjector;
 import cloud.cluster.sim.clustersimulator.dto.Task;
+import cloud.cluster.sim.controllersimulator.AutoClusterScale;
+import cloud.cluster.sim.requestsimulator.dao.SimulationStatisticsOperations;
 import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
+import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
 import cloud.cluster.sim.requestsimulator.logparser.TraceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +21,17 @@ public class SimulationController {
     @Autowired
     private ClusterManager clusterManager;
 
+    @Autowired
+    private AutoClusterScale scale;
+
+    @Autowired
+    private FailureInjector failureInjector;
+
+    @Autowired
+    private SimulationStatisticsOperations simulationStatisticsOperations;
+
     private double timePerRequest = 1.0 / 3000, totalDelay, responseTime;
-    private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber;
+    private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber, totalRequestCounter;
     private int taskTimeout = 5;
 
     /**
@@ -39,14 +52,15 @@ public class SimulationController {
         RequestDetails rd = null;
 
         TraceReader tr = new TraceReader();
-
-        int counter = 0;
         long startTime = System.nanoTime();
 
         double time = 0;
         double nextTime = 0;
         double requestTime = 0;
         int systemTicCounter = 0;
+
+        timePerRequest =  1.0 / clusterManager.getRpsForOneVm();
+
 
         // set the start of the simulation to the time of the first trace
         traceLine = tr.getNextTrace();
@@ -58,7 +72,6 @@ public class SimulationController {
 
         while (true) {
             requestTime = rd.getRequestArrivalTime();
-            counter++;
 
             // set the next action step for the system
             if (nextTime <= time) {
@@ -122,6 +135,7 @@ public class SimulationController {
             }
         }
 
+        totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
 
         long endTime = System.nanoTime();
         long executionTime = (endTime - startTime) / 1000000000;
@@ -129,15 +143,38 @@ public class SimulationController {
 
         logger.info("End time of simulation was: " + String.format("%.10f", time));
         logger.info("Last known time was:        " + String.format("%.10f", lastTraceTime));
-        logger.info("Counted:                    " + counter +" lines");
-        logger.info("Request processed:          " + (fulfilledRequestCounter + timeOutedRequestCounter));
+        logger.info("Request processed:          " + totalRequestCounter);
         logger.info("There were:                 " + systemTicCounter + " tics");
+
+        long vmNumberAtEnd = clusterManager.getClusterSize();
+        logger.info("VM number at end of simulation: " + vmNumberAtEnd);
+        SimulationStatistics simulationStatistics = new SimulationStatistics(
+                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter,
+                clusterManager.getCostComputer().getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
+
+        double avgResponseTime = simulationStatistics.getTotalDelay()
+                / simulationStatistics.getFulfilledRequestCounter();
+
+        simulationStatisticsOperations.insert(simulationStatistics);
+        logger.info("Average response time was:      " + String.format("%.10f", avgResponseTime));
+        logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
+        logger.info("Number of request fulfilled:    " + simulationStatistics.getFulfilledRequestCounter());
+        logger.info("Total cost:                     " + simulationStatistics.getTotalCost());
     }
 
     private void notifyComponentsOfTimePassing() {
         long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
         lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
+
+        // each seimulation unit of time notify the auto scaling
+        scale.scalePolicy(clusterManager, requestInLastSecond);
+        clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
+
+        // compute cost
+        clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
+        scale.incrementTime();
+
+        //simulate failure
+        failureInjector.injectFailure(clusterManager);
     }
-
-
 }
