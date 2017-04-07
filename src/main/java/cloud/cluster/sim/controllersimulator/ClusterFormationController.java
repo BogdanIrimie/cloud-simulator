@@ -14,6 +14,7 @@ import java.util.Random;
 
 /**
  * Take decisions regarding cluster formation.
+ * It is only able to carry one allocation/deallocation at a time.
  */
 @Component
 public class ClusterFormationController {
@@ -31,8 +32,7 @@ public class ClusterFormationController {
      * @param clusterManager
      */
     public void allocateVMs(long numberOfVmToAllocate, ClusterManager clusterManager) {
-        startTimeOfAllocation = Time.simulationTime - (Time.simulationTime - Time.logTime > 0 ?
-                Time.simulationTime - Time.logTime : 0);
+        startTimeOfAllocation = Time.simulationTime;
         this.clusterManager = clusterManager;
         this.numberOfVmToAllocate = numberOfVmToAllocate;
     }

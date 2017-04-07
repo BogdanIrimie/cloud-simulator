@@ -3,6 +3,7 @@ package cloud.cluster.sim.requestsimulator;
 import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.FailureInjector;
 import cloud.cluster.sim.clustersimulator.dto.Task;
+import cloud.cluster.sim.clustersimulator.dto.Time;
 import cloud.cluster.sim.controllersimulator.AutoClusterScale;
 import cloud.cluster.sim.requestsimulator.dao.SimulationStatisticsOperations;
 import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
@@ -78,6 +79,7 @@ public class SimulationController {
                 nextTime++;
                 systemTicCounter++;
 
+                Time.simulationTime = time;
                 notifyComponentsOfTimePassing();
             }
 
@@ -166,15 +168,13 @@ public class SimulationController {
         long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
         lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
 
-        // each seimulation unit of time notify the auto scaling
-        scale.scalePolicy(clusterManager, requestInLastSecond);
-        clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
-
         // compute cost
         clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
-        scale.incrementTime();
+
+        // each simulation unit of time notify the auto scaling
+        scale.scalePolicy(clusterManager, requestInLastSecond);
 
         //simulate failure
-        failureInjector.injectFailure(clusterManager);
+//        failureInjector.injectFailure(clusterManager);
     }
 }

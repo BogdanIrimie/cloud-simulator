@@ -163,10 +163,10 @@ public class TraceParser {
         if (time >= simulationNotificationTime) {
             // compute cost
             clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
-            scale.incrementTime();
+//            scale.incrementTime();
 
             //simulate failure
-            failureInjector.injectFailure(clusterManager);
+//            failureInjector.injectFailure(clusterManager);
 
             simulationNotificationTime = time + 1;
         }
