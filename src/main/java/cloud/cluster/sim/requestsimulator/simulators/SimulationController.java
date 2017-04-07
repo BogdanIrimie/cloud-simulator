@@ -34,13 +34,13 @@ public class SimulationController {
     @Autowired
     private SimulationStatisticsOperations simulationStatisticsOperations;
 
-    private double timePerRequest, responseTime;
+    private double timePerRequest, minLatency, maxLatency;;
     private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber;
     private int taskTimeout;
 
     public void startSimulation() {
         long totalRequestCounter = 0, totalDelay = 0;
-        double time = 0, nextTime = 0, requestTime = 0, minLatency, maxLatency;
+        double time = 0, nextTime = 0, requestTime = 0, responseTime = 0;
         int simulationTics = 0;
         ClusterExtRep initialClusterState, finalClusterState;
 
@@ -94,13 +94,7 @@ public class SimulationController {
                         totalDelay += responseTime;
                         fulfilledRequestCounter++;
 
-                        // compute max and min response time for simulation
-                        if (responseTime < minLatency) {
-                            minLatency = responseTime;
-                        }
-                        if (responseTime > maxLatency) {
-                            maxLatency = responseTime;
-                        }
+                        computeLatency(responseTime);
 
                     } else {
                         // there is no VM free;
@@ -145,6 +139,21 @@ public class SimulationController {
                 initialClusterState, finalClusterState, executionTime, clusterManager.getAllocationEvolution());
 
         saveSimulationResults(simulationStatistics);
+    }
+
+    /**
+     * Compute max and min latency for a simulation.
+     *
+     * @param responseTime for one request.
+     */
+    private void computeLatency(double responseTime) {
+
+        if (responseTime < minLatency) {
+            minLatency = responseTime;
+        }
+        if (responseTime > maxLatency) {
+            maxLatency = responseTime;
+        }
     }
 
     /**
