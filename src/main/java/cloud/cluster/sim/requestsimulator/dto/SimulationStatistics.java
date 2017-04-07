@@ -23,6 +23,7 @@ public class SimulationStatistics {
     private long fulfilledRequestCounter;
     private long timeOutedRequestCounter;
     private long totalCost;
+    private long simulationTics;
     private SimulationSettings simulationSettings;
     private List<AllocationState> allocationEvolution;
 
@@ -30,11 +31,12 @@ public class SimulationStatistics {
     }
 
     public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter,
-                                long timeOutedRequestCounter, long totalCost, long executionTime) {
+                                long timeOutedRequestCounter, long totalCost, long executionTime, long simulationTics) {
         this.totalDelay = totalDelay;
         this.totalRequestCounter = totalRequestCounter;
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
+        this.simulationTics = simulationTics;
         this.totalCost = totalCost;
         this.avgResponseTime = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
@@ -42,11 +44,13 @@ public class SimulationStatistics {
     }
 
     public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter,
-                                long timeOutedRequestCounter, long totalCost, long executionTime, List<AllocationState> allocationEvolution) {
+                                long timeOutedRequestCounter, long simulationTics, long totalCost,
+                                long executionTime, List<AllocationState> allocationEvolution) {
         this.totalDelay = totalDelay;
         this.totalRequestCounter = totalRequestCounter;
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
+        this.simulationTics = simulationTics;
         this.totalCost = totalCost;
         this.avgResponseTime = totalDelay / fulfilledRequestCounter;
         this.executionTime = executionTime;
@@ -108,6 +112,14 @@ public class SimulationStatistics {
 
     public void setTimeOutedRequestCounter(long timeOutedRequestCounter) {
         this.timeOutedRequestCounter = timeOutedRequestCounter;
+    }
+
+    public long getSimulationTics() {
+        return simulationTics;
+    }
+
+    public void setSimulationTics(long simulationTics) {
+        this.simulationTics = simulationTics;
     }
 
     public long getTotalCost() {

@@ -40,7 +40,7 @@ public class SimulationController {
     public void startSimulation() {
         long totalRequestCounter = 0, totalDelay = 0;
         double time = 0, nextTime = 0, requestTime = 0;
-        int systemTicCounter = 0;
+        int simulationTics = 0;
 
         String traceLine = null;
         RequestDetails rd = null;
@@ -66,7 +66,7 @@ public class SimulationController {
             // set the next action step for the system
             if (nextTime <= time) {
                 nextTime++;
-                systemTicCounter++;
+                simulationTics++;
 
                 Time.simulationTime = time;
                 notifyComponentsOfTimePassing();
@@ -129,21 +129,18 @@ public class SimulationController {
         long endTime = System.nanoTime();
         long executionTime = (endTime - startTime) / 1000000000;
 
-
-        long vmNumberAtEndOfSimulation = clusterManager.getClusterSize();
-
-        logger.info("There were:                     " + systemTicCounter + " tics");
-
-
         SimulationStatistics simulationStatistics = new SimulationStatistics(
-                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter,
+                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, simulationTics,
                 clusterManager.getCostComputer().getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
 
         saveSimulationResults(simulationStatistics);
     }
 
-
-
+    /**
+     * Save simulation statistics in DB and print them.
+     *
+     * @param simulationStatistics contains all the statistics that should be saved related to one simulation.
+     */
     private void saveSimulationResults(SimulationStatistics simulationStatistics) {
         long vmNumberAtEndOfSimulation = clusterManager.getClusterSize();
 
@@ -154,6 +151,7 @@ public class SimulationController {
         logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
         logger.info("Number of request fulfilled:    " + simulationStatistics.getFulfilledRequestCounter());
         logger.info("Total cost:                     " + simulationStatistics.getTotalCost());
+        logger.info("Simulation tics:                " + simulationStatistics.getSimulationTics());
 
         simulationStatisticsOperations.insert(simulationStatistics);
     }
