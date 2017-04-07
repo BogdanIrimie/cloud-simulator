@@ -18,7 +18,7 @@ public class SimulationController {
     private ClusterManager clusterManager;
 
     private double timePerRequest = 1.0 / 3000, totalDelay, responseTime;
-    private long fulfilledRequestCounter,timeOutedRequestCounter;
+    private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber;
     private int taskTimeout = 5;
 
     /**
@@ -46,6 +46,7 @@ public class SimulationController {
         double time = 0;
         double nextTime = 0;
         double requestTime = 0;
+        int systemTicCounter = 0;
 
         // set the start of the simulation to the time of the first trace
         traceLine = tr.getNextTrace();
@@ -62,6 +63,9 @@ public class SimulationController {
             // set the next action step for the system
             if (nextTime <= time) {
                 nextTime++;
+                systemTicCounter++;
+
+                notifyComponentsOfTimePassing();
             }
 
             // do we have a request that was not fulfilled until the present simulation moment?
@@ -99,8 +103,10 @@ public class SimulationController {
                 lastTraceTime = requestTime;
             }
             else {
+                // increment simulation time because we have no request, maximum increment
+                // is still the minimum between simulation unit of time and the request time.
                 if (requestTime > time) {
-                    time = nextTime;
+                    time = Math.min(nextTime, requestTime);
                     continue;
                 }
 
@@ -125,14 +131,13 @@ public class SimulationController {
         logger.info("Last known time was:        " + String.format("%.10f", lastTraceTime));
         logger.info("Counted:                    " + counter +" lines");
         logger.info("Request processed:          " + (fulfilledRequestCounter + timeOutedRequestCounter));
+        logger.info("There were:                 " + systemTicCounter + " tics");
     }
 
-
-
-
-    public static void main(String[] args) {
-        SimulationController sc = new SimulationController();
-        sc.simulate();
+    private void notifyComponentsOfTimePassing() {
+        long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
+        lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
     }
+
 
 }
