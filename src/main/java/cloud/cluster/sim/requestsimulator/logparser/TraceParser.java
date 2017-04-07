@@ -143,7 +143,6 @@ public class TraceParser {
 
     private void notifyOtherComponentsIfRightTime(double time, double requestTime) {
         if (requestTime >= traceNotificationTime) {
-            Time.logTime = requestTime;
             requestInTheLastSecond = totalRequestCounter - lastKnownRequestNumber;
             lastKnownRequestNumber = totalRequestCounter;
 
