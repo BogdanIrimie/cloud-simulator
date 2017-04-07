@@ -2,6 +2,7 @@ package cloud.cluster.sim.requestsimulator.simulators;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.FailureInjector;
+import cloud.cluster.sim.clustersimulator.dto.ClusterExtRep;
 import cloud.cluster.sim.clustersimulator.dto.Task;
 import cloud.cluster.sim.clustersimulator.dto.Time;
 import cloud.cluster.sim.controllersimulator.AutoClusterScale;
@@ -39,8 +40,9 @@ public class SimulationController {
 
     public void startSimulation() {
         long totalRequestCounter = 0, totalDelay = 0;
-        double time = 0, nextTime = 0, requestTime = 0;
+        double time = 0, nextTime = 0, requestTime = 0, minLatency, maxLatency;
         int simulationTics = 0;
+        ClusterExtRep initialClusterState, finalClusterState;
 
         RequestDetails traceLine = null;
         TraceReader tr = new TraceReader();
@@ -48,8 +50,13 @@ public class SimulationController {
         // initialize simulation settings
         timePerRequest = 1.0 / clusterManager.getRpsForOneVm();
         taskTimeout = SimSettingsExtractor.getSimulationSettings().getTaskTimeout();
+        minLatency = taskTimeout;
+        maxLatency = 0;
+
 
         long startTime = System.nanoTime();
+
+        initialClusterState = clusterManager.getClusterExtRep();
 
         // set the start of the simulation to the time of the first trace
         traceLine = tr.getNextTrace();
@@ -86,6 +93,15 @@ public class SimulationController {
                         responseTime = task.getTaskEndTime() - task.getTaskArrivalTime();
                         totalDelay += responseTime;
                         fulfilledRequestCounter++;
+
+                        // compute max and min response time for simulation
+                        if (responseTime < minLatency) {
+                            minLatency = responseTime;
+                        }
+                        if (responseTime > maxLatency) {
+                            maxLatency = responseTime;
+                        }
+
                     } else {
                         // there is no VM free;
                         time = Math.min(nextTime, task.getTaskEndTime());
@@ -117,14 +133,16 @@ public class SimulationController {
             }
         }
 
+        finalClusterState = clusterManager.getClusterExtRep();
         totalRequestCounter = fulfilledRequestCounter + timeOutedRequestCounter;
 
         long endTime = System.nanoTime();
         long executionTime = (endTime - startTime) / 1000000000;
 
         SimulationStatistics simulationStatistics = new SimulationStatistics(
-                totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter, simulationTics,
-                clusterManager.getCostComputer().getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
+                totalDelay, minLatency, maxLatency, totalRequestCounter, fulfilledRequestCounter,
+                timeOutedRequestCounter, simulationTics, clusterManager.getCostComputer().getTotalCost(),
+                initialClusterState, finalClusterState, executionTime, clusterManager.getAllocationEvolution());
 
         saveSimulationResults(simulationStatistics);
     }

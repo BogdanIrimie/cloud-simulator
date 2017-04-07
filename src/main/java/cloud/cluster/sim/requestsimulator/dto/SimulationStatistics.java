@@ -1,6 +1,7 @@
 package cloud.cluster.sim.requestsimulator.dto;
 
 import cloud.cluster.sim.clustersimulator.dto.AllocationState;
+import cloud.cluster.sim.clustersimulator.dto.ClusterExtRep;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.springframework.data.annotation.Id;
@@ -18,12 +19,16 @@ public class SimulationStatistics {
     private String id;
     private double totalDelay;
     private double avgResponseTime;
+    private double minLatency;
+    private double maxLatency;
     private long executionTime;
     private long totalRequestCounter;
     private long fulfilledRequestCounter;
     private long timeOutedRequestCounter;
     private long totalCost;
     private long simulationTics;
+    private ClusterExtRep clusterAtSimStart;
+    private ClusterExtRep clusterAtSimEnd;
     private SimulationSettings simulationSettings;
     private List<AllocationState> allocationEvolution;
 
@@ -43,16 +48,22 @@ public class SimulationStatistics {
         this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
     }
 
-    public SimulationStatistics(double totalDelay, long totalRequestCounter, long fulfilledRequestCounter,
-                                long timeOutedRequestCounter, long simulationTics, long totalCost,
+    public SimulationStatistics(double totalDelay, double minLatency, double maxLatency,
+                                long totalRequestCounter, long fulfilledRequestCounter,
+                                long timeOutedRequestCounter, long totalCost, long simulationTics,
+                                ClusterExtRep clusterAtSimStart, ClusterExtRep clusterAtSimEnd,
                                 long executionTime, List<AllocationState> allocationEvolution) {
         this.totalDelay = totalDelay;
+        this.avgResponseTime = totalDelay / fulfilledRequestCounter;
+        this.minLatency = minLatency;
+        this.maxLatency = maxLatency;
         this.totalRequestCounter = totalRequestCounter;
         this.fulfilledRequestCounter = fulfilledRequestCounter;
         this.timeOutedRequestCounter = timeOutedRequestCounter;
-        this.simulationTics = simulationTics;
         this.totalCost = totalCost;
-        this.avgResponseTime = totalDelay / fulfilledRequestCounter;
+        this.simulationTics = simulationTics;
+        this.clusterAtSimStart = clusterAtSimStart;
+        this.clusterAtSimEnd = clusterAtSimEnd;
         this.executionTime = executionTime;
         this.simulationSettings = SimSettingsExtractor.getSimulationSettings();
         this.allocationEvolution = allocationEvolution;
