@@ -1,8 +1,6 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
-import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
-import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +50,6 @@ public class TraceReader {
      * @return a line of trace data or null if there are no more lines to read.
      * @throws IOException
      */
-    @Nullable
     public String getNextTrace() {
         String traceLine = null;
 
@@ -91,7 +88,6 @@ public class TraceReader {
      * @return null if there are no more file to read, or a file if there are files.
      * @throws FileNotFoundException
      */
-    @Nullable
     private BufferedReader readFromNextFile() throws FileNotFoundException {
         if (fileNumber < fileNames.length) {
             br = new BufferedReader(new FileReader(fileNames[fileNumber]));
