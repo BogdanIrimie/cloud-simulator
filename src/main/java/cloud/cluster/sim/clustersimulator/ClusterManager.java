@@ -49,6 +49,10 @@ public class ClusterManager {
         clusterExtRepToCluster(clusterExtRep);
     }
 
+    public ClusterExtRep getClusterExtRep() {
+        return clusterExtRep;
+    }
+
     /**
      * Convert external representation of cluster into internal representation.
      *
