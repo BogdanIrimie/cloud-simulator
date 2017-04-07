@@ -1,4 +1,4 @@
-package cloud.cluster.sim.requestsimulator;
+package cloud.cluster.sim.requestsimulator.simulators;
 
 import cloud.cluster.sim.clustersimulator.ClusterManager;
 import cloud.cluster.sim.clustersimulator.FailureInjector;
