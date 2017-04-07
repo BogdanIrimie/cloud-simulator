@@ -99,23 +99,5 @@ public class TraceReader {
         }
     }
 
-
-    public static void main(String[] args) {
-        TraceReader tr = new TraceReader();
-        String line;
-        int counter = 0;
-
-        long startTime = System.nanoTime();
-
-        while ((line = tr.getNextTrace()) != null) {
-            counter++;
-        }
-
-        long endTime = System.nanoTime();
-        long executionTime = (endTime - startTime) / 1000000000;
-        logger.info("Time spend executing:           " + executionTime + " seconds");
-
-        System.out.println("Counted " + counter +" lines");
-    }
 }
 
