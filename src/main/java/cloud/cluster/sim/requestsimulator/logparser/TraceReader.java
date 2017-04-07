@@ -1,5 +1,6 @@
 package cloud.cluster.sim.requestsimulator.logparser;
 
+import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class TraceReader {
      * @return a line of trace data or null if there are no more lines to read.
      * @throws IOException
      */
-    public String getNextTrace() {
+    public RequestDetails getNextTrace() {
         String traceLine = null;
 
         try {
@@ -79,7 +80,19 @@ public class TraceReader {
             logger.error(e.getMessage(), e);
         }
 
-        return  traceLine;
+        return parseLog(traceLine.split(" "));
+    }
+
+    /**
+     * Create RequestDetails object from trace.
+     *
+     * @param splitTraceLine Array of Strings from one trace.
+     */
+    private RequestDetails parseLog(String[] splitTraceLine) {
+        long requestId = Long.parseLong(splitTraceLine[0]);
+        double requestTime = Double.parseDouble(splitTraceLine[1]);
+        RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
+        return requestDetails;
     }
 
     /**

@@ -42,8 +42,7 @@ public class SimulationController {
         double time = 0, nextTime = 0, requestTime = 0;
         int simulationTics = 0;
 
-        String traceLine = null;
-        RequestDetails rd = null;
+        RequestDetails traceLine = null;
         TraceReader tr = new TraceReader();
 
         // initialize simulation settings
@@ -54,14 +53,12 @@ public class SimulationController {
 
         // set the start of the simulation to the time of the first trace
         traceLine = tr.getNextTrace();
-        rd = parseLog(traceLine.split(" "));
-        time = rd.getRequestArrivalTime();
+        time = traceLine.getRequestArrivalTime();
+
         nextTime = time + 1;
 
-        double lastTraceTime = 0;
-
         while (true) {
-            requestTime = rd.getRequestArrivalTime();
+            requestTime = traceLine.getRequestArrivalTime();
 
             // set the next action step for the system
             if (nextTime <= time) {
@@ -101,9 +98,7 @@ public class SimulationController {
                 if (traceLine == null) {
                     break;
                 }
-                rd = parseLog(traceLine.split(" "));
-                requestTime = rd.getRequestArrivalTime();
-                lastTraceTime = requestTime;
+                requestTime = traceLine.getRequestArrivalTime();
             } else {
                 // increment simulation time because we have no request, maximum increment
                 // is still the minimum between simulation unit of time and the request time.
@@ -116,9 +111,7 @@ public class SimulationController {
                 if (traceLine == null) {
                     break;
                 }
-                rd = parseLog(traceLine.split(" "));
-                requestTime = rd.getRequestArrivalTime();
-                lastTraceTime = requestTime;
+                requestTime = traceLine.getRequestArrivalTime();
 
                 time = Math.min(nextTime, requestTime);
             }
@@ -154,18 +147,6 @@ public class SimulationController {
         logger.info("Simulation tics:                " + simulationStatistics.getSimulationTics());
 
         simulationStatisticsOperations.insert(simulationStatistics);
-    }
-
-    /**
-     * Create RequestDetails object from trace.
-     *
-     * @param splitTraceLine Array of Strings from one trace.
-     */
-    private RequestDetails parseLog(String[] splitTraceLine) {
-        long requestId = Long.parseLong(splitTraceLine[0]);
-        double requestTime = Double.parseDouble(splitTraceLine[1]);
-        RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
-        return requestDetails;
     }
 
     /**
