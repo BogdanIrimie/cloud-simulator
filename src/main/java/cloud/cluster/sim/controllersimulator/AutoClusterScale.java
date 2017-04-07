@@ -93,9 +93,6 @@ public class AutoClusterScale {
             lowerRequestsInLastSeconds = 0;
         }
 
-    }
-
-    public void incrementTime() {
         clusterFormationController.signalTimeIncrement();
     }
 

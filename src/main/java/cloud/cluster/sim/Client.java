@@ -1,6 +1,7 @@
 package cloud.cluster.sim;
 
-import cloud.cluster.sim.requestsimulator.simulators.Simulator;
+
+import cloud.cluster.sim.requestsimulator.simulators.SimulationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Client implements CommandLineRunner {
 
     @Autowired
-    Simulator simulator;
+    SimulationController sc;
 
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
@@ -23,7 +24,7 @@ public class Client implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
         logger.info("<-----------------------Start---------------------->");
-        simulator.startSimulation();
+        sc.startSimulation();
         logger.info(" <-----------------------End---------------------->");
     }
 
