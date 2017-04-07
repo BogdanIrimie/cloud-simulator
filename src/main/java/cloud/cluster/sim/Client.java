@@ -28,7 +28,7 @@ public class Client implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         logger.info("<-----------------------Start---------------------->");
 //        simulator.startSimulation();
-        sc.simulate();
+        sc.startSimulation();
         logger.info(" <-----------------------End---------------------->");
     }
 

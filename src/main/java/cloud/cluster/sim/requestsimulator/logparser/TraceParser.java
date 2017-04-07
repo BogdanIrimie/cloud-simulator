@@ -155,7 +155,7 @@ public class TraceParser {
             // TODO
             /*
             Time can be incremented with more then one second in current implementation.
-            Maybe add a small mechanism so simulate time passing in increments of 1 second
+            Maybe add a small mechanism so startSimulation time passing in increments of 1 second
             to send notifications to other components even when no requests are received.
             */
         }

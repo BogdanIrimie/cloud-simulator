@@ -23,11 +23,9 @@ public class Simulator {
 
     public void startSimulation() throws IOException {
         SimulationStatistics simulationStatistics = traceParser.parseTraces();
-        double avgResponseTime = simulationStatistics.getTotalDelay()
-                / simulationStatistics.getFulfilledRequestCounter();
 
         simulationStatisticsOperations.insert(simulationStatistics);
-        logger.info("Average response time was:      " + String.format("%.10f", avgResponseTime));
+        logger.info("Average response time was:      " + String.format("%.10f", simulationStatistics.getAvgResponseTime()));
         logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
         logger.info("Number of request fulfilled:    " + simulationStatistics.getFulfilledRequestCounter());
         logger.info("Total cost:                     " + simulationStatistics.getTotalCost());

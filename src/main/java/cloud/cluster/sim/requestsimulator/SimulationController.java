@@ -9,6 +9,8 @@ import cloud.cluster.sim.requestsimulator.dao.SimulationStatisticsOperations;
 import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
 import cloud.cluster.sim.requestsimulator.logparser.TraceReader;
+import cloud.cluster.sim.utilities.SimSettingsExtractor;
+import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,37 +33,24 @@ public class SimulationController {
     @Autowired
     private SimulationStatisticsOperations simulationStatisticsOperations;
 
-    private double timePerRequest = 1.0 / 3000, totalDelay, responseTime;
-    private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber, totalRequestCounter;
-    private int taskTimeout = 5;
+    private double timePerRequest, responseTime;
+    private long fulfilledRequestCounter,timeOutedRequestCounter, lastKnownRequestNumber;
+    private int taskTimeout;
 
-    /**
-     * Create RequestDetails object from trace.
-     *
-     * @param splitTraceLine Array of Strings from one trace.
-     */
-    private RequestDetails parseLog(String[] splitTraceLine) {
-        long requestId = Long.parseLong(splitTraceLine[0]);
-        double requestTime = Double.parseDouble(splitTraceLine[1]);
-        RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
-        return requestDetails;
-    }
-
-
-    public void simulate() {
-        String traceLine = null;
-        RequestDetails rd = null;
-
-        TraceReader tr = new TraceReader();
-        long startTime = System.nanoTime();
-
-        double time = 0;
-        double nextTime = 0;
-        double requestTime = 0;
+    public void startSimulation() {
+        long totalRequestCounter = 0, totalDelay = 0;
+        double time = 0, nextTime = 0, requestTime = 0;
         int systemTicCounter = 0;
 
-        timePerRequest =  1.0 / clusterManager.getRpsForOneVm();
+        String traceLine = null;
+        RequestDetails rd = null;
+        TraceReader tr = new TraceReader();
 
+        // initialize simulation settings
+        timePerRequest = 1.0 / clusterManager.getRpsForOneVm();
+        taskTimeout = SimSettingsExtractor.getSimulationSettings().getTaskTimeout();
+
+        long startTime = System.nanoTime();
 
         // set the start of the simulation to the time of the first trace
         traceLine = tr.getNextTrace();
@@ -88,8 +77,7 @@ public class SimulationController {
                 // is the request within the timeout period?
                 if (requestTime + taskTimeout < time) {
                     timeOutedRequestCounter++;
-                }
-                else {
+                } else {
                     // is there a VM available to fulfill the request
                     Task task = clusterManager.nextVm().getTask();
                     if (time >= task.getTaskEndTime()) {
@@ -116,8 +104,7 @@ public class SimulationController {
                 rd = parseLog(traceLine.split(" "));
                 requestTime = rd.getRequestArrivalTime();
                 lastTraceTime = requestTime;
-            }
-            else {
+            } else {
                 // increment simulation time because we have no request, maximum increment
                 // is still the minimum between simulation unit of time and the request time.
                 if (requestTime > time) {
@@ -133,7 +120,7 @@ public class SimulationController {
                 requestTime = rd.getRequestArrivalTime();
                 lastTraceTime = requestTime;
 
-                time =  Math.min(nextTime, requestTime);
+                time = Math.min(nextTime, requestTime);
             }
         }
 
@@ -141,29 +128,51 @@ public class SimulationController {
 
         long endTime = System.nanoTime();
         long executionTime = (endTime - startTime) / 1000000000;
-        logger.info("Time spend executing:           " + executionTime + " seconds");
 
-        logger.info("End time of simulation was: " + String.format("%.10f", time));
-        logger.info("Last known time was:        " + String.format("%.10f", lastTraceTime));
-        logger.info("Request processed:          " + totalRequestCounter);
-        logger.info("There were:                 " + systemTicCounter + " tics");
 
-        long vmNumberAtEnd = clusterManager.getClusterSize();
-        logger.info("VM number at end of simulation: " + vmNumberAtEnd);
+        long vmNumberAtEndOfSimulation = clusterManager.getClusterSize();
+
+        logger.info("There were:                     " + systemTicCounter + " tics");
+
+
         SimulationStatistics simulationStatistics = new SimulationStatistics(
                 totalDelay, totalRequestCounter, fulfilledRequestCounter, timeOutedRequestCounter,
                 clusterManager.getCostComputer().getTotalCost(), executionTime, clusterManager.getAllocationEvolution());
 
-        double avgResponseTime = simulationStatistics.getTotalDelay()
-                / simulationStatistics.getFulfilledRequestCounter();
+        saveSimulationResults(simulationStatistics);
+    }
 
-        simulationStatisticsOperations.insert(simulationStatistics);
-        logger.info("Average response time was:      " + String.format("%.10f", avgResponseTime));
+
+
+    private void saveSimulationResults(SimulationStatistics simulationStatistics) {
+        long vmNumberAtEndOfSimulation = clusterManager.getClusterSize();
+
+        logger.info("Time spend executing:           " + simulationStatistics.getExecutionTime() + " seconds");
+        logger.info("Request processed:              " + simulationStatistics.getTotalRequestCounter());
+        logger.info("VM number at end of simulation: " + vmNumberAtEndOfSimulation);
+        logger.info("Average response time was:      " + String.format("%.10f", simulationStatistics.getAvgResponseTime()));
         logger.info("Number of requests dropped:     " + simulationStatistics.getTimeOutedRequestCounter());
         logger.info("Number of request fulfilled:    " + simulationStatistics.getFulfilledRequestCounter());
         logger.info("Total cost:                     " + simulationStatistics.getTotalCost());
+
+        simulationStatisticsOperations.insert(simulationStatistics);
     }
 
+    /**
+     * Create RequestDetails object from trace.
+     *
+     * @param splitTraceLine Array of Strings from one trace.
+     */
+    private RequestDetails parseLog(String[] splitTraceLine) {
+        long requestId = Long.parseLong(splitTraceLine[0]);
+        double requestTime = Double.parseDouble(splitTraceLine[1]);
+        RequestDetails requestDetails = new RequestDetails(requestId, requestTime);
+        return requestDetails;
+    }
+
+    /**
+     * Notify other simulator components that a unit of simulation time has passed.
+     */
     private void notifyComponentsOfTimePassing() {
         long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
         lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
@@ -175,6 +184,6 @@ public class SimulationController {
         scale.scalePolicy(clusterManager, requestInLastSecond);
 
         //simulate failure
-//        failureInjector.injectFailure(clusterManager);
+        failureInjector.injectFailure(clusterManager);
     }
 }
