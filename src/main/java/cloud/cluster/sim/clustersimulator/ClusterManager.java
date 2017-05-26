@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class ClusterManager {
 
-    private long rpsForOneVm;
+    private long opsForOneVm;
     private ClusterExtRep clusterExtRep;
     private Cluster cluster;
     private int currentResourceIndex = 0;
@@ -33,7 +33,7 @@ public class ClusterManager {
      * Read ClusterExtRep configuration date from Json file.
      */
     public ClusterManager() {
-        this.rpsForOneVm = SimSettingsExtractor.getSimulationSettings().getRpsForVm();
+        this.opsForOneVm = SimSettingsExtractor.getSimulationSettings().getOpsForVm();
 
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream is = classLoader.getResourceAsStream("clusterConfig.json");
@@ -50,6 +50,7 @@ public class ClusterManager {
     }
 
     public ClusterExtRep getClusterExtRep() {
+        ClusterExtRep clusterExtRep = clusterToClusterExtRep();
         return clusterExtRep;
     }
 
@@ -69,7 +70,7 @@ public class ClusterManager {
     }
 
     /**
-     * Trnsform internal representation of cluster to external representation.
+     * Transform internal representation of cluster to external representation.
      *
      * @return external representation of cluster.
      */
@@ -100,17 +101,17 @@ public class ClusterManager {
         return cluster;
     }
 
-    public long getRpsForOneVm() {
-        return rpsForOneVm;
+    public long getOpsForOneVm() {
+        return opsForOneVm;
     }
 
     /**
-     * Compute the maximum RPS supported by the Cluster managed by the ClusterManager.
+     * Compute the maximum OPS supported by the Cluster managed by the ClusterManager.
      *
      * @return maximum number of request that can be fulfilled by the Cluster in one second.
      */
-    public long computeCumulativeRpsForCluster() {
-        return cluster.getVms().size() * rpsForOneVm;
+    public long computeCumulativeOpsForCluster() {
+        return cluster.getVms().size() * opsForOneVm;
     }
 
 
@@ -147,6 +148,7 @@ public class ClusterManager {
      */
     public void removeVm(int id) {
         if (cluster.getVms().size() <= 1) {
+            logger.info("Scaling algorithm tried to remove all VMs, this is illegal and at least 1 machine should be present.");
             return;
         }
 

@@ -3,10 +3,10 @@
     {
       "microDataCenter" : {
         "name": "mDC_1",
-        "sla": 99.99,
+        "sla": 99.95,
         "cost": 3
       },
-      "vmNumber": 10
+      "vmNumber": 0
     },
     {
       "microDataCenter" : {
@@ -14,15 +14,15 @@
         "sla": 99.00,
         "cost": 2
       },
-      "vmNumber": 1
+      "vmNumber": 0
     },
     {
       "microDataCenter" : {
         "name": "mDC_3",
-        "sla": 98.00,
+        "sla": 95.00,
         "cost": 1
       },
-      "vmNumber": 1
+      "vmNumber": 0
     }
   ]
 }

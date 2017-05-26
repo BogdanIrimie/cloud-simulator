@@ -11,7 +11,6 @@ import cloud.cluster.sim.requestsimulator.dto.RequestDetails;
 import cloud.cluster.sim.requestsimulator.dto.SimulationStatistics;
 import cloud.cluster.sim.requestsimulator.logparser.TraceReader;
 import cloud.cluster.sim.utilities.SimSettingsExtractor;
-import cloud.cluster.sim.utilities.dto.SimulationSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class SimulationController {
         TraceReader tr = new TraceReader();
 
         // initialize simulation settings
-        timePerRequest = 1.0 / clusterManager.getRpsForOneVm();
+        timePerRequest = 1.0 / clusterManager.getOpsForOneVm();
         taskTimeout = SimSettingsExtractor.getSimulationSettings().getTaskTimeout();
         minLatency = taskTimeout;
         maxLatency = 0;
@@ -82,6 +81,13 @@ public class SimulationController {
                 if (requestTime + taskTimeout < time) {
                     timeOutedRequestCounter++;
                 } else {
+
+                    // are there no VMs in the cluster? just increment time.
+                    if (clusterManager.nextVm() == null) {
+                        time = nextTime;
+                        continue;
+                    }
+
                     // is there a VM available to fulfill the request
                     Task task = clusterManager.nextVm().getTask();
                     if (time >= task.getTaskEndTime()) {
@@ -190,6 +196,6 @@ public class SimulationController {
         scale.scalePolicy(clusterManager, requestInLastSecond);
 
         //simulate failure
-        failureInjector.injectFailure(clusterManager);
+//        failureInjector.injectFailure(clusterManager);
     }
 }

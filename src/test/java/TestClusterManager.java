@@ -10,10 +10,10 @@ public class TestClusterManager {
     }
 
     @Test
-    public void readMaxRps() {
+    public void readMaxOps() {
         ClusterManager clusterManager = new ClusterManager();
-        long maxRps = clusterManager.computeCumulativeRpsForCluster();
-        System.out.println("Max rps: " + maxRps);
+        long maxOps = clusterManager.computeCumulativeOpsForCluster();
+        System.out.println("Max ops: " + maxOps);
     }
 
 }
