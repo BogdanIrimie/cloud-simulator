@@ -42,6 +42,7 @@ public class SimulationController {
         double time = 0, nextTime = 0, requestTime = 0, responseTime = 0;
         int simulationTics = 0;
         ClusterExtRep initialClusterState, finalClusterState;
+        long requestCounter = 0;
 
         RequestDetails traceLine = null;
         TraceReader tr = new TraceReader();
@@ -65,6 +66,7 @@ public class SimulationController {
 
         while (true) {
             requestTime = traceLine.getRequestArrivalTime();
+            requestCounter++;
 
             // set the next action step for the system
             if (nextTime <= time) {
@@ -72,7 +74,8 @@ public class SimulationController {
                 simulationTics++;
 
                 Time.simulationTime = time;
-                notifyComponentsOfTimePassing();
+                notifyComponentsOfTimePassing(requestCounter);
+                requestCounter = 0;
             }
 
             // do we have a request that was not fulfilled until the present simulation moment?
@@ -185,15 +188,15 @@ public class SimulationController {
     /**
      * Notify other simulator components that a unit of simulation time has passed.
      */
-    private void notifyComponentsOfTimePassing() {
-        long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
-        lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
+    private void notifyComponentsOfTimePassing(long requestCounter) {
+//        long requestInLastSecond = fulfilledRequestCounter + timeOutedRequestCounter - lastKnownRequestNumber;
+//        lastKnownRequestNumber = fulfilledRequestCounter + timeOutedRequestCounter;
 
         // compute cost
         clusterManager.getCostComputer().addCostForLastSecond(clusterManager);
 
         // each simulation unit of time notify the auto scaling
-        scale.scalePolicy(clusterManager, requestInLastSecond);
+        scale.scalePolicy(clusterManager, requestCounter);
 
         //simulate failure
 //        failureInjector.injectFailure(clusterManager);
